@@ -1,9 +1,10 @@
 import type { BetterAuthOptions } from "better-auth";
 import { expo } from "@better-auth/expo";
-import { db } from "@ragnotes/db/client";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { oAuthProxy } from "better-auth/plugins";
+
+import { db } from "@ragnotes/db/client";
 
 export function initAuth(options: {
   baseUrl: string;

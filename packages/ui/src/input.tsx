@@ -1,4 +1,5 @@
 import type { ComponentProps } from "react";
+
 import { cn } from "@ragnotes/ui";
 
 export function Input({ className, ...props }: ComponentProps<"input">) {

@@ -1,6 +1,7 @@
 import type { NextRequest } from "next/server";
-import { appRouter, createTRPCContext } from "@ragnotes/api";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
+
+import { appRouter, createTRPCContext } from "@ragnotes/api";
 
 import { auth } from "~/auth/server";
 

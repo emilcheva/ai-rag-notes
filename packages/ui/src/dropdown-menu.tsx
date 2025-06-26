@@ -6,8 +6,9 @@ import {
   ChevronRightIcon,
   DotFilledIcon,
 } from "@radix-ui/react-icons";
-import { cn } from "@ragnotes/ui";
 import { DropdownMenu as DropdownMenuPrimitive } from "radix-ui";
+
+import { cn } from "@ragnotes/ui";
 
 export const DropdownMenu = DropdownMenuPrimitive.Root;
 export const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
