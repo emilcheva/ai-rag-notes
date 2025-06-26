@@ -1,5 +1,4 @@
 import type { BetterAuthOptions } from "better-auth";
-import { expo } from "@better-auth/expo";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { oAuthProxy } from "better-auth/plugins";
@@ -28,7 +27,6 @@ export function initAuth(options: {
         currentURL: options.baseUrl,
         productionURL: options.productionUrl,
       }),
-      expo(),
     ],
     socialProviders: {
       google: {
@@ -37,7 +35,6 @@ export function initAuth(options: {
         redirectURI: `${options.productionUrl}/api/auth/callback/google`,
       },
     },
-    trustedOrigins: ["expo://"],
   } satisfies BetterAuthOptions;
 
   return betterAuth(config);
