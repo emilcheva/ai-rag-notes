@@ -4,10 +4,19 @@ import { LogOut } from "lucide-react";
 
 import { Button } from "@ragnotes/ui/button";
 
+import { signOut } from "~/actions";
+
 export function SignOutButton() {
   return (
-    <Button variant="outline" title="Sign out">
-      <LogOut />
-    </Button>
+    <form>
+      <Button
+        variant="destructive"
+        title="Sign out"
+        size="lg"
+        formAction={signOut}
+      >
+        <LogOut />
+      </Button>
+    </form>
   );
 }
