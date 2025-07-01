@@ -21,7 +21,6 @@
   "dependencies": {
     "@ragnotes/auth": "workspace:*",
     "@ragnotes/db": "workspace:*",
-    "@ragnotes/validators": "workspace:*",
     "@trpc/server": "catalog:",
     "superjson": "2.2.2",
     "zod": "catalog:"

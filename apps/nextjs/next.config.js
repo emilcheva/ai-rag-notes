@@ -13,7 +13,6 @@ const config = {
     "@ragnotes/auth",
     "@ragnotes/db",
     "@ragnotes/ui",
-    "@ragnotes/validators",
   ],
 
   /** We already do linting and typechecking as separate tasks in CI */

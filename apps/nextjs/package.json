@@ -18,7 +18,6 @@
     "@ragnotes/auth": "workspace:*",
     "@ragnotes/db": "workspace:*",
     "@ragnotes/ui": "workspace:*",
-    "@ragnotes/validators": "workspace:*",
     "@t3-oss/env-nextjs": "^0.13.6",
     "@tanstack/react-query": "catalog:",
     "@trpc/client": "catalog:",
