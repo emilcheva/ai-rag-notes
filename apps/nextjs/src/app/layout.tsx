@@ -2,8 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import { cn } from "@ragnotes/ui";
-import { ThemeProvider, ThemeToggle } from "@ragnotes/ui/theme";
-import { Toaster } from "@ragnotes/ui/toast";
+import { ThemeProvider } from "@ragnotes/ui/theme";
 
 import { TRPCReactProvider } from "~/trpc/react";
 
@@ -17,18 +16,13 @@ export const metadata: Metadata = {
       ? "https://turbo.t3.gg"
       : "http://localhost:3000",
   ),
-  title: "Create T3 Turbo",
-  description: "Simple monorepo with shared backend for web & mobile apps",
+  title: "AI Notes",
+  description: "AI RAG Notes",
   openGraph: {
-    title: "Create T3 Turbo",
-    description: "Simple monorepo with shared backend for web & mobile apps",
+    title: "AI Notes",
+    description: "AI RAG Notes",
     url: "https://create-t3-turbo.vercel.app",
-    siteName: "Create T3 Turbo",
-  },
-  twitter: {
-    card: "summary_large_image",
-    site: "@jullerino",
-    creator: "@jullerino",
+    siteName: "AI Notes",
   },
 };
 
@@ -60,10 +54,6 @@ export default function RootLayout(props: { children: React.ReactNode }) {
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <TRPCReactProvider>{props.children}</TRPCReactProvider>
-          <div className="absolute bottom-4 right-4">
-            <ThemeToggle />
-          </div>
-          <Toaster />
         </ThemeProvider>
       </body>
     </html>

@@ -28,6 +28,9 @@ export function initAuth(options: {
         productionURL: options.productionUrl,
       }),
     ],
+    emailAndPassword: {
+      enabled: true,
+    },
     socialProviders: {
       google: {
         clientId: options.googleClientId,

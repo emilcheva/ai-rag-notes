@@ -1,10 +1,20 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+
 import { Skeleton } from "@ragnotes/ui/skeleton";
 
+import { auth } from "~/auth/server";
 import { AIChatButton } from "./ai-chat-button";
 import { CreateNoteButton } from "./create-note-button";
 
-export function NotesPage() {
+const Page = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) redirect("/sign-in");
+
   const notes: [] | undefined = [];
 
   return (
@@ -28,7 +38,9 @@ export function NotesPage() {
       )}
     </div>
   );
-}
+};
+
+export default Page;
 
 function EmptyView() {
   return (
