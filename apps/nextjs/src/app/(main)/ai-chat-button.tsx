@@ -12,7 +12,7 @@ export function AIChatButton() {
 
   return (
     <>
-      <Button onClick={() => setChatOpen(true)} variant="secondary">
+      <Button onClick={() => setChatOpen(true)} variant="outline">
         <Bot />
         <span className="ml-2">Ask AI</span>
       </Button>

@@ -228,7 +228,7 @@ export const SignUp = () => {
 
           <div className="bg-radial from-sidebar-accent to-sidebar relative hidden flex-col items-center justify-center gap-y-4 md:flex">
             <Image src={logo} alt="Image logo" width={92} height={92} />
-            <p className="text-2xl font-semibold text-white">Meet.AI</p>
+            <p className="text-2xl font-semibold text-white">AI RAG Notes</p>
           </div>
         </CardContent>
       </Card>
