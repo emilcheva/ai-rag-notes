@@ -4,9 +4,9 @@ import { redirect } from "next/navigation";
 
 import { Skeleton } from "@ragnotes/ui/skeleton";
 
+import { AIChatButton } from "~/app/_components/notes/ai-chat-button";
+import { CreateNoteButton } from "~/app/_components/notes/create-note-button";
 import { auth } from "~/auth/server";
-import { AIChatButton } from "./ai-chat-button";
-import { CreateNoteButton } from "./create-note-button";
 
 const Page = async () => {
   const session = await auth.api.getSession({

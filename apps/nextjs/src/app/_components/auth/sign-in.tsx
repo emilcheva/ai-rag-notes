@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { FaGoogle } from "react-icons/fa";
 import { z } from "zod";
 
 import { Button } from "@ragnotes/ui/button";
@@ -20,7 +21,6 @@ import {
 } from "@ragnotes/ui/form";
 import { Input } from "@ragnotes/ui/input";
 
-// import { Alert, AlertTitle } from "@ragnotes/ui/alert";
 import logo from "~/assets/rag-notes-logo.png";
 import { authClient } from "~/auth/client";
 
@@ -158,7 +158,8 @@ export const SignIn = () => {
                     variant={"outline"}
                     className="w-full"
                   >
-                    {/* <FaGoogle /> */}
+                    <FaGoogle />
+                    <span className="ml-2">Sign in with Google</span>
                   </Button>
                 </div>
 
@@ -177,7 +178,7 @@ export const SignIn = () => {
 
           <div className="bg-radial from-sidebar-accent to-sidebar relative hidden flex-col items-center justify-center gap-y-4 md:flex">
             <Image src={logo} alt="Image logo" width={92} height={92} />
-            <p className="text-2xl font-semibold text-white">AI RAG Notes</p>
+            <p className="text-2xl font-semibold">AI RAG Notes</p>
           </div>
         </CardContent>
       </Card>

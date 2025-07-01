@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { FaGoogle } from "react-icons/fa";
 import { z } from "zod";
 
 import { Button } from "@ragnotes/ui/button";
@@ -209,7 +210,8 @@ export const SignUp = () => {
                     variant={"outline"}
                     className="w-full"
                   >
-                    {/* <FaGoogle /> */}
+                    <FaGoogle />
+                    <span className="ml-2">Sign up with Google</span>
                   </Button>
                 </div>
 
@@ -217,7 +219,7 @@ export const SignUp = () => {
                   Already have an account?
                   <Link
                     href="/sign-in"
-                    className="underline underline-offset-4"
+                    className="ml-2 font-semibold underline underline-offset-4"
                   >
                     Sign In
                   </Link>
@@ -226,9 +228,9 @@ export const SignUp = () => {
             </form>
           </Form>
 
-          <div className="bg-radial from-sidebar-accent to-sidebar relative hidden flex-col items-center justify-center gap-y-4 md:flex">
+          <div className="bg-radial relative hidden flex-col items-center justify-center gap-y-4 from-primary to-card md:flex">
             <Image src={logo} alt="Image logo" width={92} height={92} />
-            <p className="text-2xl font-semibold text-white">AI RAG Notes</p>
+            <p className="text-2xl font-semibold">AI RAG Notes</p>
           </div>
         </CardContent>
       </Card>
