@@ -22,7 +22,7 @@ export function initAuth(options: {
     plugins: [
       oAuthProxy({
         /**
-         * Auto-inference blocked by https://github.com/better-auth/better-auth/pull/2891
+         * Note: oauth is NOT proxied if productionUrl === baseUrl
          */
         currentURL: options.baseUrl,
         productionURL: options.productionUrl,
