@@ -14,6 +14,10 @@ const baseUrl =
       ? `https://${env.VERCEL_URL}`
       : "http://localhost:3000";
 
+//debuggin values
+console.log(baseUrl);
+console.log(env.VERCEL_PROJECT_PRODUCTION_URL);
+
 export const auth = initAuth({
   baseUrl,
   productionUrl: env.VERCEL_PROJECT_PRODUCTION_URL
