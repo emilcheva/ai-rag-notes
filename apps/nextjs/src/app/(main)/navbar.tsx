@@ -11,7 +11,7 @@ export function Navbar() {
     <nav className="mb-4 flex justify-center border-b bg-card p-4">
       <div className="container mx-auto flex items-center justify-between xl:max-w-6xl">
         <Link
-          href="/notes"
+          href="/"
           className="flex items-center gap-3 text-xl font-semibold text-card-foreground transition-opacity hover:opacity-80"
         >
           <Image
