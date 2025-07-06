@@ -1,14 +1,22 @@
 import { Suspense } from "react";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 import { Skeleton } from "@ragnotes/ui/skeleton";
 
 import { AIChatButton } from "~/app/_components/notes/ai-chat-button";
 import { CreateNoteButton } from "~/app/_components/notes/create-note-button";
 import { NotesList } from "~/app/_components/notes/notes-list";
+import { auth } from "~/auth/server";
 import { HydrateClient, prefetch, trpc } from "~/trpc/server";
 
-const Page = () => {
-  // FIXME: use ErrorBoundary for TRPCError({ code: "UNAUTHORIZED" }) that will be thrown if the user is not logged in
+const Page = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) redirect("/sign-in");
+
   prefetch(trpc.note.all.queryOptions());
 
   return (
@@ -23,6 +31,7 @@ const Page = () => {
         </div>
 
         <Suspense fallback={<LoadingSkeleton />}>
+          {/* FIXME: use ErrorBoundary */}
           <NotesList />
         </Suspense>
       </div>
