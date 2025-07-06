@@ -24,6 +24,7 @@ export const CreateNoteSchema = createInsertSchema(Note, {
   content: z.string().max(256),
 }).omit({
   id: true,
+  ownerId: true,
   createdAt: true,
   updatedAt: true,
 });

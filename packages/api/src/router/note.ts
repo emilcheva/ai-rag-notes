@@ -16,7 +16,10 @@ export const noteRouter = {
   create: protectedProcedure
     .input(CreateNoteSchema)
     .mutation(({ ctx, input }) => {
-      return ctx.db.insert(Note).values(input);
+      return ctx.db.insert(Note).values({
+        ...input,
+        ownerId: ctx.session.user.id,
+      });
     }),
 
   delete: protectedProcedure.input(z.string()).mutation(({ ctx, input }) => {

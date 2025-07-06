@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -25,13 +26,16 @@ import {
 } from "@ragnotes/ui/form";
 import { Input } from "@ragnotes/ui/input";
 import { Textarea } from "@ragnotes/ui/textarea";
+import { toast } from "@ragnotes/ui/toast";
+
+import { useTRPC } from "~/trpc/react";
 
 const noteFormSchema = z.object({
   title: z.string().min(1, {
     message: "Title cannot be empty.",
   }),
-  body: z.string().min(1, {
-    message: "Body cannot be empty.",
+  content: z.string().min(1, {
+    message: "Content cannot be empty.",
   }),
 });
 
@@ -55,16 +59,46 @@ interface CreateNoteDialogProps {
 }
 
 function CreateNoteDialog({ open, onOpenChange }: CreateNoteDialogProps) {
+  const queryClient = useQueryClient();
+  const trpc = useTRPC();
+
   const form = useForm<z.infer<typeof noteFormSchema>>({
     resolver: zodResolver(noteFormSchema),
     defaultValues: {
       title: "",
-      body: "",
+      content: "",
     },
   });
 
-  async function onSubmit(_values: z.infer<typeof noteFormSchema>) {
-    // TODO: Create note from form input
+  const createNote = useMutation(
+    trpc.note.create.mutationOptions({
+      onSuccess: async () => {
+        form.reset();
+        await queryClient.invalidateQueries(trpc.note.pathFilter());
+      },
+      onError: (err) => {
+        toast.error(
+          err.data?.code === "UNAUTHORIZED"
+            ? "You must be logged in to post"
+            : "Failed to create post",
+        );
+      },
+    }),
+  );
+
+  function onSubmit(values: z.infer<typeof noteFormSchema>) {
+    try {
+      createNote.mutate({
+        title: values.title,
+        content: values.content,
+      });
+      toast.success("Note created successfully!");
+      form.reset();
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error creating note:", error);
+      toast.error("Oops, something went wrong. Failed to create note");
+    }
   }
 
   return (
@@ -94,12 +128,12 @@ function CreateNoteDialog({ open, onOpenChange }: CreateNoteDialogProps) {
             />
             <FormField
               control={form.control}
-              name="body"
+              name="content"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Body</FormLabel>
+                  <FormLabel>Content</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Note body" {...field} />
+                    <Textarea placeholder="Note content" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
