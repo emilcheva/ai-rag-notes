@@ -23,7 +23,7 @@ export function NotesList() {
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
       <div className="flex w-full flex-col gap-4">
         {notes.map((note) => {
-          return <NoteItem key={note.id} />;
+          return <NoteItem key={note.id} note={note} />;
         })}
       </div>
     </div>

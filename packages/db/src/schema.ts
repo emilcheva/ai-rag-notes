@@ -29,4 +29,7 @@ export const CreateNoteSchema = createInsertSchema(Note, {
   updatedAt: true,
 });
 
+export type SelectNote = typeof Note.$inferSelect;
+export type InsertNote = typeof Note.$inferInsert;
+
 export * from "./auth-schema";

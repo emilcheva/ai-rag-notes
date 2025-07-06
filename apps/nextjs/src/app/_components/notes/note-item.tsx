@@ -2,16 +2,18 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@ragnotes/ui/card";
 
-export function NoteItem() {
+import type { Note } from "~/app/lib/types";
+
+export function NoteItem({ note }: { note: Note }) {
   return (
     <>
       <Card className="cursor-pointer transition-shadow hover:shadow-md">
         <CardHeader>
-          <CardTitle>Note Title</CardTitle>
+          <CardTitle>{note.title}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="line-clamp-3 whitespace-pre-line text-sm text-muted-foreground">
-            Note Body
+            {note.content}
           </div>
         </CardContent>
       </Card>

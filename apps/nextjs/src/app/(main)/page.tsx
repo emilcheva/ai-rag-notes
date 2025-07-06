@@ -31,7 +31,6 @@ const Page = async () => {
         </div>
 
         <Suspense fallback={<LoadingSkeleton />}>
-          {/* FIXME: use ErrorBoundary */}
           <NotesList />
         </Suspense>
       </div>
