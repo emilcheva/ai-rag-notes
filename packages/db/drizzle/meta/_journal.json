@@ -8,6 +8,13 @@
       "when": 1751974385334,
       "tag": "0000_gray_thunderbolt_ross",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1751976348026,
+      "tag": "0001_shocking_starbolt",
+      "breakpoints": true
     }
   ]
 }
