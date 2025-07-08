@@ -32,6 +32,9 @@
     "//#clean": {
       "cache": false
     },
+    "migrate": {
+      "cache": false
+    },
     "push": {
       "cache": false
     },

@@ -48,8 +48,8 @@ jobs:
           branch_name: preview/pr-${{ needs.setup.outputs.branch }}
           api_key: ${{ secrets.NEON_API_KEY }}
 
-      - name: Apply Schema Changes
-        run: pnpm db:push
+      - name: Apply DB Migrations to the ephemeral DB
+        run: pnpm db:migrate
         env:
           POSTGRES_URL: ${{ steps.create_neon_branch.outputs.db_url_with_pooler }}
 
