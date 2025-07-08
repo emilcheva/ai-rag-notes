@@ -1,0 +1,17 @@
+name: Apply DB Migrations to production DB
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./tooling/github/setup
+
+      - name: Migrate
+        run: pnpm db:migrate
