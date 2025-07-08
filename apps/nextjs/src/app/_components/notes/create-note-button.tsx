@@ -79,8 +79,8 @@ function CreateNoteDialog({ open, onOpenChange }: CreateNoteDialogProps) {
       onError: (err) => {
         toast.error(
           err.data?.code === "UNAUTHORIZED"
-            ? "You must be logged in to post"
-            : "Failed to create post",
+            ? "You must be logged in to create note"
+            : "Failed to create note",
         );
       },
     }),
