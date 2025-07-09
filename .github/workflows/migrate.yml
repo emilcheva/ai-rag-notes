@@ -1,4 +1,4 @@
-name: Apply DB Migrations to production DB
+name: Apply DB migrations to production DB
 
 on:
   push:
