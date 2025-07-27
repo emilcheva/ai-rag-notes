@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 import { cn } from "@ragnotes/ui";
 import { ThemeProvider } from "@ragnotes/ui/theme";
@@ -47,13 +48,15 @@ export default function RootLayout(props: { children: React.ReactNode }) {
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "min-h-screen bg-background font-sans text-foreground antialiased",
+          "min-h-screen bg-muted font-sans text-foreground antialiased",
           geistSans.variable,
           geistMono.variable,
         )}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <TRPCReactProvider>{props.children}</TRPCReactProvider>
+          <NuqsAdapter>
+            <TRPCReactProvider>{props.children}</TRPCReactProvider>
+          </NuqsAdapter>
         </ThemeProvider>
       </body>
     </html>
