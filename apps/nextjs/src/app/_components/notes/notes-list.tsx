@@ -2,12 +2,12 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { Skeleton } from "@ragnotes/ui/skeleton";
-
 import { useNotesFilters } from "~/app/hooks/use-notes-filters";
 import { useTRPC } from "~/trpc/react";
 import { DataPagination } from "../pagination/data-pagination";
-import { NoteItem } from "./note-item";
+import { ErrorState } from "../ui-states/error-state";
+import { LoadingState } from "../ui-states/loading-state";
+import { NoteItemCard } from "./note-item-card";
 
 export function NotesList() {
   const trpc = useTRPC();
@@ -19,26 +19,24 @@ export function NotesList() {
   );
 
   if (isRefetching) {
-    return <LoadingSkeleton />;
+    return <LoadingState title="Loading Notes" description="Please wait..." />;
   }
 
   if (filters.page > notesData.totalPages) {
     return (
-      <div className="py-10 text-center">
-        <p className="text-muted-foreground">
-          No notes found for page {filters.page}
-        </p>
-      </div>
+      <ErrorState
+        title="No Notes Found"
+        description={`No notes found for page ${filters.page}`}
+      />
     );
   }
 
   if (notesData.notes.length === 0) {
     return (
-      <div className="py-10 text-center">
-        <p className="text-muted-foreground">
-          No notes yet. Create your first note!
-        </p>
-      </div>
+      <ErrorState
+        title="No Notes Found"
+        description="No notes yet. Create your first note!"
+      />
     );
   }
 
@@ -46,7 +44,7 @@ export function NotesList() {
     <div className="flex flex-col gap-y-4">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
         {notesData.notes.map((note) => {
-          return <NoteItem key={note.id} note={note} />;
+          return <NoteItemCard key={note.id} note={note} />;
         })}
       </div>
       <DataPagination
@@ -57,15 +55,3 @@ export function NotesList() {
     </div>
   );
 }
-
-export const LoadingSkeleton = () => {
-  return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-      {Array.from({ length: 6 }).map((_, i) => (
-        <div key={i} className="flex flex-col space-y-3">
-          <Skeleton className="h-40 w-full rounded-xl" />
-        </div>
-      ))}
-    </div>
-  );
-};
