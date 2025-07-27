@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
@@ -59,6 +60,7 @@ interface CreateNoteDialogProps {
 }
 
 function CreateNoteDialog({ open, onOpenChange }: CreateNoteDialogProps) {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const trpc = useTRPC();
 
@@ -73,7 +75,7 @@ function CreateNoteDialog({ open, onOpenChange }: CreateNoteDialogProps) {
   const createNote = useMutation(
     trpc.note.create.mutationOptions({
       onSuccess: async () => {
-        form.reset();
+        router.push("/");
         await queryClient.invalidateQueries(trpc.note.pathFilter());
       },
       onError: (err) => {
@@ -93,11 +95,12 @@ function CreateNoteDialog({ open, onOpenChange }: CreateNoteDialogProps) {
         content: values.content,
       });
       toast.success("Note created successfully!");
-      form.reset();
-      onOpenChange(false);
     } catch (error) {
       console.error("Error creating note:", error);
       toast.error("Oops, something went wrong. Failed to create note");
+    } finally {
+      form.reset();
+      onOpenChange(false);
     }
   }
 
