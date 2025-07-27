@@ -20,37 +20,13 @@ export function NoteItem({ noteId }: { noteId: string }) {
   const queryClient = useQueryClient();
   const [deletePending, setDeletePending] = useState(false);
 
-  const {
-    data: note,
-    error,
-    isError,
-  } = useSuspenseQuery(
+  const { data: note } = useSuspenseQuery(
     trpc.note.byId.queryOptions({
       id: noteId,
     }),
   );
 
   const deleteNote = useMutation(trpc.note.delete.mutationOptions());
-
-  if (isError) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center">
-        <h1 className="text-2xl font-bold">
-          {error.data?.code === "NOT_FOUND"
-            ? "Note not found"
-            : "Something went wrong"}
-        </h1>
-        <p className="mt-2 text-muted-foreground">
-          {error.data?.code === "NOT_FOUND"
-            ? "The note you're looking for doesn't exist or has been deleted."
-            : "An error occurred while loading the note. Please try again."}
-        </p>
-        <Button onClick={() => router.push("/")} className="mt-4">
-          Back to Notes
-        </Button>
-      </div>
-    );
-  }
 
   const handleDelete = () => {
     setDeletePending(true);
