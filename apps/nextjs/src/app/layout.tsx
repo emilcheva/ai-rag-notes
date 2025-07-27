@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 import { cn } from "@ragnotes/ui";
+import { Toaster } from "@ragnotes/ui/sonner";
 import { ThemeProvider } from "@ragnotes/ui/theme";
 
 import { TRPCReactProvider } from "~/trpc/react";
@@ -57,6 +58,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           <NuqsAdapter>
             <TRPCReactProvider>{props.children}</TRPCReactProvider>
           </NuqsAdapter>
+          <Toaster richColors />
         </ThemeProvider>
       </body>
     </html>
