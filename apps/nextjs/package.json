@@ -27,6 +27,7 @@
     "nuqs": "^2.4.3",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
+    "react-error-boundary": "^6.0.0",
     "superjson": "2.2.2",
     "trpc-ui": "catalog:",
     "zod": "catalog:"

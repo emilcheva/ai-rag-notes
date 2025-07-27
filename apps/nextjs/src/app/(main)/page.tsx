@@ -3,12 +3,15 @@ import { Suspense } from "react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createLoader, parseAsInteger } from "nuqs/server";
+import { ErrorBoundary } from "react-error-boundary";
 
 import { AIChatButton } from "~/app/_components/notes/ai-chat-button";
 import { CreateNoteButton } from "~/app/_components/notes/create-note-button";
-import { LoadingSkeleton, NotesList } from "~/app/_components/notes/notes-list";
+import { NotesList } from "~/app/_components/notes/notes-list";
 import { auth } from "~/auth/server";
 import { HydrateClient, prefetch, trpc } from "~/trpc/server";
+import { ErrorState } from "../_components/ui-states/error-state";
+import { LoadingState } from "../_components/ui-states/loading-state";
 
 interface Props {
   searchParams: Promise<SearchParams>;
@@ -43,8 +46,21 @@ const Page = async ({ searchParams }: Props) => {
           </div>
         </div>
 
-        <Suspense fallback={<LoadingSkeleton />}>
-          <NotesList />
+        <Suspense
+          fallback={
+            <LoadingState title="Loading Notes" description="Please wait..." />
+          }
+        >
+          <ErrorBoundary
+            fallback={
+              <ErrorState
+                title="Error"
+                description="Something went wrong loading notes"
+              />
+            }
+          >
+            <NotesList />
+          </ErrorBoundary>
         </Suspense>
       </div>
     </HydrateClient>
