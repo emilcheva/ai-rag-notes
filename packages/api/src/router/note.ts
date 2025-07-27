@@ -1,7 +1,8 @@
 import type { TRPCRouterRecord } from "@trpc/server";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod/v4";
 
-import { count, desc, eq } from "@ragnotes/db";
+import { and, count, desc, eq } from "@ragnotes/db";
 import { CreateNoteSchema, Note } from "@ragnotes/db/schema";
 
 import { protectedProcedure } from "../trpc";
@@ -48,6 +49,29 @@ export const noteRouter = {
       };
     }),
 
+  byId: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const [note] = await ctx.db
+        .select({
+          id: Note.id,
+          title: Note.title,
+          content: Note.content,
+          createdAt: Note.createdAt,
+        })
+        .from(Note)
+        .where(
+          and(eq(Note.id, input.id), eq(Note.ownerId, ctx.session.user.id)),
+        );
+      if (!note) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `Note not found`,
+        });
+      }
+      return note;
+    }),
+
   create: protectedProcedure
     .input(CreateNoteSchema)
     .mutation(({ ctx, input }) => {
@@ -58,6 +82,8 @@ export const noteRouter = {
     }),
 
   delete: protectedProcedure.input(z.string()).mutation(({ ctx, input }) => {
-    return ctx.db.delete(Note).where(eq(Note.id, input));
+    return ctx.db
+      .delete(Note)
+      .where(and(eq(Note.id, input), eq(Note.ownerId, ctx.session.user.id)));
   }),
 } satisfies TRPCRouterRecord;
