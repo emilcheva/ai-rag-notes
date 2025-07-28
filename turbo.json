@@ -53,7 +53,8 @@
     "AUTH_GOOGLE_SECRET",
     "AUTH_REDIRECT_PROXY_URL",
     "BETTER_AUTH_SECRET",
-    "PORT"
+    "PORT",
+    "SSR_SECRET_KEY"
   ],
   "globalPassThroughEnv": [
     "NODE_ENV",
