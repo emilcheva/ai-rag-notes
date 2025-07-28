@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
@@ -59,6 +60,7 @@ interface CreateNoteDialogProps {
 }
 
 function CreateNoteDialog({ open, onOpenChange }: CreateNoteDialogProps) {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const trpc = useTRPC();
 
@@ -70,35 +72,32 @@ function CreateNoteDialog({ open, onOpenChange }: CreateNoteDialogProps) {
     },
   });
 
-  const createNote = useMutation(
-    trpc.note.create.mutationOptions({
-      onSuccess: async () => {
-        form.reset();
-        await queryClient.invalidateQueries(trpc.note.pathFilter());
-      },
-      onError: (err) => {
-        toast.error(
-          err.data?.code === "UNAUTHORIZED"
-            ? "You must be logged in to create note"
-            : "Failed to create note",
-        );
-      },
-    }),
-  );
+  const createNote = useMutation(trpc.note.create.mutationOptions());
 
   function onSubmit(values: z.infer<typeof noteFormSchema>) {
-    try {
-      createNote.mutate({
+    createNote.mutate(
+      {
         title: values.title,
         content: values.content,
-      });
-      toast.success("Note created successfully!");
-      form.reset();
-      onOpenChange(false);
-    } catch (error) {
-      console.error("Error creating note:", error);
-      toast.error("Oops, something went wrong. Failed to create note");
-    }
+      },
+      {
+        onSuccess: () => {
+          toast.success("Note created successfully!");
+          form.reset();
+          onOpenChange(false);
+          router.push("/");
+          void queryClient.invalidateQueries(trpc.note.all.pathFilter());
+        },
+        onError: (error) => {
+          console.error("Error creating note:", error);
+          toast.error(
+            error.data?.code === "UNAUTHORIZED"
+              ? "You must be logged in to create note"
+              : "Failed to create note. Please try again.",
+          );
+        },
+      },
+    );
   }
 
   return (

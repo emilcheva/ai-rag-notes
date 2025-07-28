@@ -1,23 +1,39 @@
+import type { SearchParams } from "nuqs";
 import { Suspense } from "react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-
-import { Skeleton } from "@ragnotes/ui/skeleton";
+import { createLoader, parseAsInteger } from "nuqs/server";
+import { ErrorBoundary } from "react-error-boundary";
 
 import { AIChatButton } from "~/app/_components/notes/ai-chat-button";
 import { CreateNoteButton } from "~/app/_components/notes/create-note-button";
 import { NotesList } from "~/app/_components/notes/notes-list";
 import { auth } from "~/auth/server";
 import { HydrateClient, prefetch, trpc } from "~/trpc/server";
+import { ErrorState } from "../_components/ui-states/error-state";
+import { LoadingState } from "../_components/ui-states/loading-state";
 
-const Page = async () => {
+interface Props {
+  searchParams: Promise<SearchParams>;
+}
+
+const searchParamsCache = {
+  page: parseAsInteger.withDefault(1),
+  pageSize: parseAsInteger.withDefault(9),
+};
+
+const loadSearchParams = createLoader(searchParamsCache);
+
+const Page = async ({ searchParams }: Props) => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
   if (!session) redirect("/sign-in");
 
-  prefetch(trpc.note.all.queryOptions());
+  const { page, pageSize } = await loadSearchParams(searchParams);
+
+  prefetch(trpc.note.all.queryOptions({ page, pageSize }));
 
   return (
     <HydrateClient>
@@ -30,8 +46,21 @@ const Page = async () => {
           </div>
         </div>
 
-        <Suspense fallback={<LoadingSkeleton />}>
-          <NotesList />
+        <Suspense
+          fallback={
+            <LoadingState title="Loading Notes" description="Please wait..." />
+          }
+        >
+          <ErrorBoundary
+            fallback={
+              <ErrorState
+                title="Error"
+                description="Something went wrong loading notes"
+              />
+            }
+          >
+            <NotesList />
+          </ErrorBoundary>
         </Suspense>
       </div>
     </HydrateClient>
@@ -39,15 +68,3 @@ const Page = async () => {
 };
 
 export default Page;
-
-function LoadingSkeleton() {
-  return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-      {Array.from({ length: 6 }).map((_, i) => (
-        <div key={i} className="flex flex-col space-y-3">
-          <Skeleton className="h-40 w-full rounded-xl" />
-        </div>
-      ))}
-    </div>
-  );
-}

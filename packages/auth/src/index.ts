@@ -19,6 +19,7 @@ export function initAuth(options: {
     }),
     baseURL: options.baseUrl,
     secret: options.secret,
+    trustedOrigins: [options.baseUrl],
     plugins: [
       oAuthProxy({
         /**

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ThemeToggle } from "@ragnotes/ui/theme";
 
 import logo from "~/assets/rag-notes-logo.png";
-import { SignOutButton } from "./sign-out-button";
+import { SignOutButton } from "../_components/auth/sign-out-button";
 
 export function Navbar() {
   return (
