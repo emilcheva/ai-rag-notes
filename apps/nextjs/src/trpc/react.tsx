@@ -9,6 +9,7 @@ import {
   loggerLink,
 } from "@trpc/client";
 import { createTRPCContext } from "@trpc/tanstack-react-query";
+import { readSSROnlySecret } from "ssr-only-secrets";
 import SuperJSON from "superjson";
 
 import type { AppRouter } from "@ragnotes/api";
@@ -29,7 +30,10 @@ const getQueryClient = () => {
 
 export const { useTRPC, TRPCProvider } = createTRPCContext<AppRouter>();
 
-export function TRPCReactProvider(props: { children: React.ReactNode }) {
+export function TRPCReactProvider(props: {
+  ssrOnlySecret: string;
+  children: React.ReactNode;
+}) {
   const queryClient = getQueryClient();
 
   const [trpcClient] = useState(() =>
@@ -43,10 +47,21 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
         httpBatchStreamLink({
           transformer: SuperJSON,
           url: getBaseUrl() + "/api/trpc",
-          headers() {
+          async headers() {
             const headers = new Headers();
+            const secret = props.ssrOnlySecret;
+            const value = await readSSROnlySecret(secret, "SSR_SECRET_KEY");
             headers.set("x-trpc-source", "nextjs-react");
+            if (value) {
+              headers.set("cookie", value);
+            }
             return headers;
+          },
+          fetch(url, options) {
+            return fetch(url, {
+              ...options,
+              credentials: "include",
+            });
           },
         }),
       ],
