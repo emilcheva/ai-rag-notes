@@ -5,7 +5,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNotesFilters } from "~/app/hooks/use-notes-filters";
 import { useTRPC } from "~/trpc/react";
 import { DataPagination } from "../pagination/data-pagination";
-import { ErrorState } from "../ui-states/error-state";
+import { EmptyState } from "../ui-states/empty-state";
 import { LoadingState } from "../ui-states/loading-state";
 import { NoteItemCard } from "./note-item-card";
 
@@ -22,20 +22,20 @@ export function NotesList() {
     return <LoadingState title="Loading Notes" description="Please wait..." />;
   }
 
-  if (filters.page > notesData.totalPages) {
+  if (notesData.notes.length === 0) {
     return (
-      <ErrorState
+      <EmptyState
         title="No Notes Found"
-        description={`No notes found for page ${filters.page}`}
+        description="No notes yet. Create your first note!"
       />
     );
   }
 
-  if (notesData.notes.length === 0) {
+  if (filters.page > notesData.totalPages) {
     return (
-      <ErrorState
+      <EmptyState
         title="No Notes Found"
-        description="No notes yet. Create your first note!"
+        description={`No notes found for page ${filters.page}`}
       />
     );
   }
