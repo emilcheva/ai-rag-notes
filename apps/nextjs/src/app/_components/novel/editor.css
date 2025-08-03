@@ -2,6 +2,11 @@
   @apply p-4 px-2 sm:px-4;
 }
 
+/* Focus styling applied to outer EditorContent via has() selector */
+.ProseMirror:focus {
+  @apply outline-none;
+}
+
 /* Show placeholder in main editor elements (exclude lists to prevent duplicates) */
 .ProseMirror
   > .is-editor-empty:first-child:not([data-type="taskList"]):not(ul):not(

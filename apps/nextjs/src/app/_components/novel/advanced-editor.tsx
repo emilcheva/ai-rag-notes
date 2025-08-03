@@ -42,7 +42,7 @@ const TailwindAdvancedEditor = ({
           immediatelyRender={false}
           editable={isEditable}
           extensions={extensions}
-          className="relative max-h-[290px] w-full overflow-y-auto rounded-md border bg-white px-3 py-2 shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          className="relative max-h-[290px] w-full overflow-y-auto rounded-md border bg-transparent px-3 py-2 shadow-sm outline-none has-[:focus]:ring-1 has-[:focus]:ring-ring"
           editorProps={{
             handleDOMEvents: {
               keydown: (_view, event) => handleCommandNavigation(event),
@@ -53,14 +53,14 @@ const TailwindAdvancedEditor = ({
               handleImageDrop(view, event, moved, uploadFn),
             attributes: {
               class:
-                "prose prose-sm dark:prose-invert prose-headings:font-title font-default focus:outline-none outline-none max-w-full",
+                "prose prose-sm dark:prose-invert prose-headings:font-title font-default outline-none max-w-full",
             },
           }}
           onUpdate={({ editor }) => {
             debouncedUpdates(editor);
           }}
         >
-          <EditorCommand className="z-50 h-auto max-h-[330px] overflow-y-auto rounded-md border border-muted bg-white px-1 py-2 shadow-md transition-all">
+          <EditorCommand className="z-50 h-auto max-h-[330px] overflow-y-auto rounded-md border border-muted bg-background px-1 py-2 shadow-md transition-all">
             <EditorCommandEmpty className="px-2 py-2 text-muted-foreground">
               No results
             </EditorCommandEmpty>
