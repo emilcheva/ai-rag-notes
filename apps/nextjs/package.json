@@ -28,6 +28,7 @@
     "@trpc/client": "catalog:",
     "@trpc/server": "catalog:",
     "@trpc/tanstack-react-query": "catalog:",
+    "@vercel/blob": "catalog:",
     "cmdk": "^1.1.1",
     "next": "^15.3.3",
     "novel": "^1.0.2",
