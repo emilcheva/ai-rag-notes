@@ -96,8 +96,8 @@ const youtubeExtension = Youtube.configure({
     class: cn("mx-auto my-4"),
   },
   inline: true,
-  width: 640,
-  height: 480,
+  width: 400,
+  height: 300,
 });
 
 const taskList = TaskList.configure({

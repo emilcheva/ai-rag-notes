@@ -48,7 +48,7 @@ export function CreateNoteButton() {
     <>
       <Button onClick={() => setDialogOpen(true)}>
         <Plus />
-        <span className="ml-2">Create Note</span>
+        <span className="ml-2 hidden md:inline">Create Note</span>
       </Button>
       <CreateNoteDialog open={dialogOpen} onOpenChange={setDialogOpen} />
     </>
