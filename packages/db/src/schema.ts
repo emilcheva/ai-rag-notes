@@ -21,7 +21,7 @@ export const Note = pgTable("note", (t) => ({
 
 export const CreateNoteSchema = createInsertSchema(Note, {
   title: z.string().max(256),
-  content: z.string().max(256),
+  content: z.string(),
 }).omit({
   id: true,
   ownerId: true,
