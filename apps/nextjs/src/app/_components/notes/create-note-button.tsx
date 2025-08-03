@@ -1,5 +1,6 @@
 "use client";
 
+import type { EditorInstance } from "novel";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,10 +27,10 @@ import {
   FormMessage,
 } from "@ragnotes/ui/form";
 import { Input } from "@ragnotes/ui/input";
-import { Textarea } from "@ragnotes/ui/textarea";
 import { toast } from "@ragnotes/ui/toast";
 
 import { useTRPC } from "~/trpc/react";
+import TailwindAdvancedEditor from "../novel/advanced-editor";
 
 const noteFormSchema = z.object({
   title: z.string().min(1, {
@@ -100,8 +101,15 @@ function CreateNoteDialog({ open, onOpenChange }: CreateNoteDialogProps) {
     );
   }
 
+  const handleOpenChange = (newOpen: boolean) => {
+    if (!newOpen) {
+      form.reset();
+    }
+    onOpenChange(newOpen);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create New Note</DialogTitle>
@@ -128,11 +136,18 @@ function CreateNoteDialog({ open, onOpenChange }: CreateNoteDialogProps) {
             <FormField
               control={form.control}
               name="content"
-              render={({ field }) => (
+              render={() => (
                 <FormItem>
                   <FormLabel>Content</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Note content" {...field} />
+                    <div className="prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none">
+                      <TailwindAdvancedEditor
+                        onChange={(editor: EditorInstance) => {
+                          const jsonContent = JSON.stringify(editor.getJSON());
+                          form.setValue("content", jsonContent);
+                        }}
+                      />
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

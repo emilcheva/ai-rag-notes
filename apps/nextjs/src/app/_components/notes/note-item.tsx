@@ -13,6 +13,7 @@ import { Button } from "@ragnotes/ui/button";
 import { toast } from "@ragnotes/ui/toast";
 
 import { useTRPC } from "~/trpc/react";
+import { NoteContentPreview } from "./note-content-preview";
 
 export function NoteItem({ noteId }: { noteId: string }) {
   const trpc = useTRPC();
@@ -84,7 +85,7 @@ export function NoteItem({ noteId }: { noteId: string }) {
 
         <div className="prose max-w-none">
           <div className="whitespace-pre-wrap text-base leading-relaxed">
-            {note.content}
+            <NoteContentPreview content={note.content} />
           </div>
         </div>
       </div>

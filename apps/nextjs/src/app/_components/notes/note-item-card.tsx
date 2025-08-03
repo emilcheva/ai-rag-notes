@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@ragnotes/ui/card";
 
 import type { Note } from "~/app/lib/types";
+import { NoteContentPreview } from "./note-content-preview";
 
 export function NoteItemCard({ note }: { note: Note }) {
   const router = useRouter();
@@ -20,8 +21,8 @@ export function NoteItemCard({ note }: { note: Note }) {
         <CardTitle>{note.title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="line-clamp-3 whitespace-pre-line text-sm text-muted-foreground">
-          {note.content}
+        <div className="line-clamp-3 text-sm text-muted-foreground">
+          <NoteContentPreview content={note.content} />
         </div>
       </CardContent>
     </Card>
