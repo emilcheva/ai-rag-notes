@@ -1,7 +1,3 @@
-.ProseMirror {
-  @apply p-4 px-2 sm:px-4;
-}
-
 /* Focus styling applied to outer EditorContent via has() selector */
 .ProseMirror:focus {
   @apply outline-none;

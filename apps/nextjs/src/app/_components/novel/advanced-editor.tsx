@@ -42,7 +42,7 @@ const TailwindAdvancedEditor = ({
           immediatelyRender={false}
           editable={isEditable}
           extensions={extensions}
-          className="relative max-h-[290px] w-full overflow-y-auto rounded-md border bg-transparent px-3 py-2 shadow-sm outline-none has-[:focus]:ring-1 has-[:focus]:ring-ring"
+          className="relative h-[120px] w-full overflow-y-auto rounded-md border bg-transparent px-3 py-2 shadow-sm outline-none has-[:focus]:ring-1 has-[:focus]:ring-ring md:h-[290px]"
           editorProps={{
             handleDOMEvents: {
               keydown: (_view, event) => handleCommandNavigation(event),
@@ -69,7 +69,7 @@ const TailwindAdvancedEditor = ({
                 <EditorCommandItem
                   value={item.title}
                   onCommand={(val) => item.command?.(val)}
-                  className="flex w-full items-start gap-4 rounded-md px-2 text-left text-sm hover:bg-accent aria-selected:bg-accent"
+                  className="flex w-full cursor-pointer items-start gap-4 rounded-md px-2 text-left text-sm hover:bg-accent aria-selected:bg-accent"
                   key={item.title}
                 >
                   <div className="flex h-10 w-10 items-center justify-center">

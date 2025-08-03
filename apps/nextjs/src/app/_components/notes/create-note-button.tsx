@@ -1,7 +1,7 @@
 "use client";
 
 import type { EditorInstance } from "novel";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -107,6 +107,21 @@ function CreateNoteDialog({ open, onOpenChange }: CreateNoteDialogProps) {
     }
     onOpenChange(newOpen);
   };
+
+  // Fixes issue with modal not allowing mouse interaction with the editor commands
+  // https://github.com/radix-ui/primitives/issues/2122
+  useEffect(() => {
+    if (open) {
+      // Pushing the change to the end of the call stack
+      const timer = setTimeout(() => {
+        document.body.style.pointerEvents = "";
+      }, 0);
+
+      return () => clearTimeout(timer);
+    } else {
+      document.body.style.pointerEvents = "auto";
+    }
+  }, [open]);
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
