@@ -42,7 +42,7 @@ const TailwindAdvancedEditor = ({
           immediatelyRender={false}
           editable={isEditable}
           extensions={extensions}
-          className="relative h-[120px] w-full overflow-y-auto rounded-md border bg-transparent px-3 py-2 shadow-sm outline-none has-[:focus]:ring-1 has-[:focus]:ring-ring md:h-[290px]"
+          className="relative w-full overflow-y-auto rounded-md border bg-transparent px-3 py-2 shadow-sm outline-none has-[:focus]:ring-1 has-[:focus]:ring-ring"
           editorProps={{
             handleDOMEvents: {
               keydown: (_view, event) => handleCommandNavigation(event),
