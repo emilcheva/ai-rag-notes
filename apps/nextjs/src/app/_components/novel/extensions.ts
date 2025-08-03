@@ -1,4 +1,5 @@
 import { TextAlign } from "@tiptap/extension-text-align";
+import { Youtube } from "@tiptap/extension-youtube";
 import { mergeAttributes } from "@tiptap/react";
 import {
   Color,
@@ -90,6 +91,15 @@ const MarkdownExtension = Markdown.configure({
   transformCopiedText: true,
 });
 
+const youtubeExtension = Youtube.configure({
+  HTMLAttributes: {
+    class: cn("mx-auto my-4"),
+  },
+  inline: true,
+  width: 640,
+  height: 480,
+});
+
 const taskList = TaskList.configure({
   HTMLAttributes: {
     class: cn("not-prose pl-2"),
@@ -167,4 +177,5 @@ export const defaultExtensions = [
   underline,
   placeholder,
   MarkdownExtension,
+  youtubeExtension,
 ];

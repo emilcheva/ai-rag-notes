@@ -159,9 +159,8 @@ export const suggestionItems = createSuggestionItems([
         return;
       }
 
-      //From https://regexr.com/3dj5t
       const ytregex = new RegExp(
-        /^((?:https?:)?\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w-]+\?v=|embed\/|v\/)?)([\w-]+)(\S+)?$/,
+        /^(?:https?:\/\/)?(?:www\.|m\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([\w-]{11})(?:\S+)?$/,
       );
 
       if (ytregex.test(videoLink)) {
