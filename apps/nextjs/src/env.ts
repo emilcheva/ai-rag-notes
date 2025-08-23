@@ -18,6 +18,7 @@ export const env = createEnv({
   server: {
     POSTGRES_URL: z.string().url(),
     BLOB_READ_WRITE_TOKEN: z.string(),
+    GOOGLE_GENERATIVE_AI_API_KEY: z.string(),
   },
 
   /**

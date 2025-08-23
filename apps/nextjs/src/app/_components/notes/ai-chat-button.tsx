@@ -1,11 +1,37 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { Bot, Expand, Minimize, Send, Trash, X } from "lucide-react";
+import type { UIMessage } from "ai";
+import { useState } from "react";
+import { useChat } from "@ai-sdk/react";
+import { Bot, Expand, Minimize, Trash, X } from "lucide-react";
 
 import { cn } from "@ragnotes/ui";
+import {
+  Conversation,
+  ConversationContent,
+  ConversationScrollButton,
+} from "@ragnotes/ui/ai-elements/conversation";
+import { Loader } from "@ragnotes/ui/ai-elements/loader";
+import { Message, MessageContent } from "@ragnotes/ui/ai-elements/message";
+import {
+  PromptInput,
+  PromptInputSubmit,
+  PromptInputTextarea,
+  PromptInputToolbar,
+} from "@ragnotes/ui/ai-elements/prompt-input";
+import {
+  Reasoning,
+  ReasoningContent,
+  ReasoningTrigger,
+} from "@ragnotes/ui/ai-elements/reasoning";
+import { Response } from "@ragnotes/ui/ai-elements/response";
+import {
+  Source,
+  Sources,
+  SourcesContent,
+  SourcesTrigger,
+} from "@ragnotes/ui/ai-elements/source";
 import { Button } from "@ragnotes/ui/button";
-import { Textarea } from "@ragnotes/ui/textarea";
 
 export function AIChatButton() {
   const [chatOpen, setChatOpen] = useState(false);
@@ -26,10 +52,36 @@ interface AIChatBoxProps {
   onClose: () => void;
 }
 
+const initialMessages: UIMessage[] = [
+  {
+    id: "welcome-message",
+    role: "assistant",
+    parts: [
+      {
+        type: "text",
+        text: "I'm your notes assistant. I can find and summarize any information that you saved.",
+      },
+    ],
+  },
+];
+
 function AIChatBox({ open, onClose }: AIChatBoxProps) {
+  const [input, setInput] = useState("");
+  const { messages, sendMessage, setMessages, status } = useChat({
+    messages: initialMessages,
+  });
+
+  const isProcessing = status === "submitted" || status === "streaming";
+
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (input.trim() && !isProcessing) {
+      void sendMessage({ text: input });
+      setInput("");
+    }
+  }
 
   if (!open) return null;
 
@@ -58,10 +110,12 @@ function AIChatBox({ open, onClose }: AIChatBoxProps) {
             {isExpanded ? <Minimize /> : <Expand />}
           </Button>
           <Button
+            onClick={() => setMessages(initialMessages)}
             variant="ghost"
             size="icon"
             className="h-8 w-8 text-primary-foreground hover:bg-primary/90"
             title="Clear chat"
+            disabled={isProcessing}
           >
             <Trash />
           </Button>
@@ -77,32 +131,88 @@ function AIChatBox({ open, onClose }: AIChatBoxProps) {
       </div>
 
       <div className="flex-1 space-y-4 overflow-y-auto p-3">
-        {/* TODO: Render messages here */}
-        <div ref={messagesEndRef} />
+        <Conversation className="h-full">
+          <ConversationContent>
+            {messages.map((message) => (
+              <div key={message.id}>
+                {message.role === "assistant" && (
+                  <Sources>
+                    {message.parts.map((part, i) => {
+                      switch (part.type) {
+                        case "source-url":
+                          return (
+                            <>
+                              <SourcesTrigger
+                                count={
+                                  message.parts.filter(
+                                    (part) => part.type === "source-url",
+                                  ).length
+                                }
+                              />
+                              <SourcesContent key={`${message.id}-${i}`}>
+                                <Source
+                                  key={`${message.id}-${i}`}
+                                  href={part.url}
+                                  title={part.url}
+                                />
+                              </SourcesContent>
+                            </>
+                          );
+                      }
+                    })}
+                  </Sources>
+                )}
+                <Message from={message.role} key={message.id}>
+                  <MessageContent>
+                    {message.parts.map((part, i) => {
+                      switch (part.type) {
+                        case "text":
+                          return (
+                            <Response key={`${message.id}-${i}`}>
+                              {part.text}
+                            </Response>
+                          );
+                        case "reasoning":
+                          return (
+                            <Reasoning
+                              key={`${message.id}-${i}`}
+                              className="w-full"
+                              isStreaming={status === "streaming"}
+                            >
+                              <ReasoningTrigger />
+                              <ReasoningContent>{part.text}</ReasoningContent>
+                            </Reasoning>
+                          );
+                        default:
+                          return null;
+                      }
+                    })}
+                  </MessageContent>
+                </Message>
+              </div>
+            ))}
+            {status === "submitted" && <Loader />}
+          </ConversationContent>
+          <ConversationScrollButton />
+        </Conversation>
       </div>
 
-      <form className="flex gap-2 border-t p-3">
-        <Textarea
-          placeholder="Type your message..."
-          className="max-h-[120px] min-h-[40px] resize-none overflow-y-auto"
-          maxLength={1000}
-          autoFocus
+      <PromptInput onSubmit={handleSubmit} className="mt-4 flex gap-2 p-4">
+        <PromptInputTextarea
+          className="border-0"
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+            setInput(e.target.value)
+          }
+          value={input}
         />
-        <Button type="submit" size="icon">
-          <Send className="size-4" />
-        </Button>
-      </form>
-    </div>
-  );
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function Loader() {
-  return (
-    <div className="ml-2 flex items-center gap-1 py-2">
-      <div className="size-1.5 animate-pulse rounded-full bg-primary" />
-      <div className="size-1.5 animate-pulse rounded-full bg-primary delay-150" />
-      <div className="size-1.5 animate-pulse rounded-full bg-primary delay-300" />
+        <PromptInputToolbar>
+          <PromptInputSubmit
+            variant="secondary"
+            disabled={!input}
+            status={status}
+          />
+        </PromptInputToolbar>
+      </PromptInput>
     </div>
   );
 }
