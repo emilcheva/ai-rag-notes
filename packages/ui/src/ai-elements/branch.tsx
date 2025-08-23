@@ -8,14 +8,14 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { cn } from "..";
 import { Button } from "../button";
 
-type BranchContextType = {
+interface BranchContextType {
   currentBranch: number;
   totalBranches: number;
   goToPrevious: () => void;
   goToNext: () => void;
   branches: ReactElement[];
   setBranches: (branches: ReactElement[]) => void;
-};
+}
 
 const BranchContext = createContext<BranchContextType | null>(null);
 
