@@ -1,6 +1,6 @@
+import type { UIMessage } from "ai";
 import { headers } from "next/headers";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import type { UIMessage } from "ai";
 import { convertToModelMessages, streamText } from "ai";
 
 import { auth } from "~/auth/server";
