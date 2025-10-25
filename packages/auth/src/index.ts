@@ -25,7 +25,6 @@ export function initAuth(options: {
         /**
          * Note: oauth is NOT proxied if productionUrl === baseUrl
          */
-        currentURL: options.baseUrl,
         productionURL: options.productionUrl,
       }),
     ],
@@ -37,6 +36,11 @@ export function initAuth(options: {
         clientId: options.googleClientId,
         clientSecret: options.googleClientSecret,
         redirectURI: `${options.productionUrl}/api/auth/callback/google`,
+      },
+    },
+    onAPIError: {
+      onError(error, ctx) {
+        console.error("BETTER AUTH API ERROR", error, ctx);
       },
     },
   } satisfies BetterAuthOptions;
