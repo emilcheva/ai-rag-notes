@@ -4,7 +4,8 @@ import reactConfig from "@ragnotes/eslint-config/react";
 /** @type {import('typescript-eslint').Config} */
 export default [
   {
-    ignores: ["dist/**"],
+    // ignore ai-elements from linting as they come from ai-sdk
+    ignores: ["dist/**", "src/ai-elements/**"],
   },
   ...baseConfig,
   ...reactConfig,

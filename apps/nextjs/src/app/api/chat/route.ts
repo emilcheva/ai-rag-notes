@@ -26,7 +26,7 @@ export async function POST(req: Request) {
     },
   });
 
-  const { messages }: { messages: UIMessage[] } = await req.json();
+  const { messages } = (await req.json()) as { messages: UIMessage[] };
 
   // only last 10 messages to not overflow the context window
   const lastMessages = messages.slice(-10);
