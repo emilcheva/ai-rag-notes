@@ -1,0 +1,1 @@
+ALTER TABLE "note" ADD COLUMN "embedding" vector(768) NOT NULL;

@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable } from "drizzle-orm/pg-core";
+import { pgTable, vector } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
@@ -17,6 +17,7 @@ export const Note = pgTable("note", (t) => ({
   updatedAt: t
     .timestamp({ mode: "date", withTimezone: true })
     .$onUpdateFn(() => sql`now()`),
+  embedding: vector("embedding", { dimensions: 768 }).notNull(),
 }));
 
 export const CreateNoteSchema = createInsertSchema(Note, {
@@ -27,6 +28,7 @@ export const CreateNoteSchema = createInsertSchema(Note, {
   ownerId: true,
   createdAt: true,
   updatedAt: true,
+  embedding: true,
 });
 
 export type SelectNote = typeof Note.$inferSelect;
