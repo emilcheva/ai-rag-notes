@@ -5,6 +5,7 @@ import { z } from "zod/v4";
 import { and, count, desc, eq } from "@ragnotes/db";
 import { CreateNoteSchema, Note } from "@ragnotes/db/schema";
 
+import { generateEmbedding } from "../lib/embeddings";
 import { protectedProcedure } from "../trpc";
 
 const DEFAULT_PAGE_SIZE = 9;
@@ -74,11 +75,27 @@ export const noteRouter = {
 
   create: protectedProcedure
     .input(CreateNoteSchema)
-    .mutation(({ ctx, input }) => {
-      return ctx.db.insert(Note).values({
-        ...input,
-        ownerId: ctx.session.user.id,
-      });
+    .mutation(async ({ ctx, input }) => {
+      try {
+        // Generate embedding for the note
+        const noteText = `${input.title}\n\n${input.content}`;
+        const embedding = await generateEmbedding(noteText);
+
+        // Create the note with embedding
+        const result = await ctx.db.insert(Note).values({
+          ...input,
+          ownerId: ctx.session.user.id,
+          embedding: embedding,
+        });
+
+        return result;
+      } catch (error) {
+        console.error("Error creating note with embedding:", error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to create note",
+        });
+      }
     }),
 
   delete: protectedProcedure.input(z.string()).mutation(({ ctx, input }) => {

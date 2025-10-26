@@ -33,6 +33,9 @@ import {
 } from "@ragnotes/ui/ai-elements/source";
 import { Button } from "@ragnotes/ui/button";
 
+import type { NoteData } from "./ai-note-response";
+import { NoteResponseLink, NotesResponseList } from "./ai-note-response";
+
 export function AIChatButton() {
   const [chatOpen, setChatOpen] = useState(false);
 
@@ -59,7 +62,7 @@ const initialMessages: UIMessage[] = [
     parts: [
       {
         type: "text",
-        text: "I'm your notes assistant. I can find and summarize any information that you saved.",
+        text: "I'm your notes assistant. I can find any information that you saved. Ask me questions about your notes!",
       },
     ],
   },
@@ -164,24 +167,46 @@ function AIChatBox({ open, onClose }: AIChatBoxProps) {
                 )}
                 <Message from={message.role} key={message.id}>
                   <MessageContent>
-                    {message.parts.map((part, i) => {
+                    {message.parts.map((part) => {
                       switch (part.type) {
                         case "text":
                           return (
-                            <Response key={`${message.id}-${i}`}>
+                            <Response
+                              key={`${message.id}`}
+                              className={
+                                message.id === "welcome-message"
+                                  ? "rounded-lg border border-primary/30 bg-primary/10 p-4 font-medium"
+                                  : ""
+                              }
+                            >
                               {part.text}
                             </Response>
                           );
                         case "reasoning":
                           return (
                             <Reasoning
-                              key={`${message.id}-${i}`}
-                              className="w-full"
+                              key={`${message.id}`}
+                              className="w-full rounded-lg border border-primary/30 bg-primary/10 p-4 font-medium"
                               isStreaming={status === "streaming"}
                             >
                               <ReasoningTrigger />
                               <ReasoningContent>{part.text}</ReasoningContent>
                             </Reasoning>
+                          );
+                        case "tool-getInformation":
+                          return (
+                            <div
+                              key={`${message.id}`}
+                              className="my-2 flex flex-col gap-3"
+                            >
+                              <div className="min-w-40 rounded-md border border-muted bg-muted/50 p-3 text-sm">
+                                <div className="mb-1 text-xs font-medium text-muted-foreground">
+                                  Answer
+                                </div>
+                                {part.state === "output-available" &&
+                                  formatResponseWithNoteLinks(part.output)}
+                              </div>
+                            </div>
                           );
                         default:
                           return null;
@@ -215,4 +240,75 @@ function AIChatBox({ open, onClose }: AIChatBoxProps) {
       </PromptInput>
     </div>
   );
+}
+
+// Helper function to process text with note links
+function processTextWithNoteLinks(content: string): React.ReactNode {
+  const noteIdRegex = /\[Note ID: ([a-zA-Z0-9-]+)\]/g;
+
+  if (!noteIdRegex.test(content)) {
+    return content;
+  }
+
+  // Reset regex state
+  noteIdRegex.lastIndex = 0;
+
+  const parts: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = noteIdRegex.exec(content)) !== null) {
+    // Add text before the match
+    if (match.index > lastIndex) {
+      parts.push(content.substring(lastIndex, match.index));
+    }
+
+    // Add the note link
+    const noteId = match[1];
+    if (noteId) {
+      parts.push(<NoteResponseLink key={`link-${noteId}`} noteId={noteId} />);
+    }
+
+    lastIndex = match.index + match[0].length;
+  }
+
+  // Add remaining text
+  if (lastIndex < content.length) {
+    parts.push(content.substring(lastIndex));
+  }
+
+  return <>{parts}</>;
+}
+
+// Helper function to format response text with note links
+function formatResponseWithNoteLinks(content: unknown): React.ReactNode {
+  // If content is not a string (likely an object from tool output)
+  if (typeof content !== "string") {
+    try {
+      // Try to parse the tool output
+      const output = content as {
+        notes?: NoteData[];
+        message?: string;
+      };
+
+      if (!output.notes) {
+        return (
+          <p className="text-muted-foreground">
+            No notes information available
+          </p>
+        );
+      }
+
+      // Format the notes as links
+      return (
+        <NotesResponseList notes={output.notes} message={output.message} />
+      );
+    } catch (error) {
+      console.error("Error formatting tool output:", error);
+      return <p className="text-sm text-red-500">Error displaying results</p>;
+    }
+  }
+
+  // For text responses, process note links
+  return processTextWithNoteLinks(content);
 }

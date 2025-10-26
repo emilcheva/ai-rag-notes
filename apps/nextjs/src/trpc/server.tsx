@@ -32,6 +32,17 @@ export const trpc = createTRPCOptionsProxy<AppRouter>({
   queryClient: getQueryClient,
 });
 
+/**
+ * This is the caller for the tRPC API when handling a tRPC call from a React Server Component.
+ *
+ * @note This method is detached from the query client and does not store the data in the cache. This means that the data is not available for the client.
+ *
+ * @example
+ *
+ * const data = api.users.getUser();
+ */
+export const api = appRouter.createCaller(createContext);
+
 export function HydrateClient(props: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
   return (

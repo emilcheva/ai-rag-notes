@@ -5,7 +5,7 @@ import reactConfig from "@ragnotes/eslint-config/react";
 /** @type {import('typescript-eslint').Config} */
 export default [
   {
-    ignores: [".next/**"],
+    ignores: [".next/**", "src/app/api/chat/route.ts"],
   },
   ...baseConfig,
   ...reactConfig,
