@@ -81,17 +81,21 @@ const LoaderIcon = ({ size = 16 }: LoaderIconProps) => (
 );
 
 export type LoaderProps = HTMLAttributes<HTMLDivElement> & {
-  size?: number;
+  size?: number | "sm";
 };
 
-export const Loader = ({ className, size = 16, ...props }: LoaderProps) => (
-  <div
-    className={cn(
-      "inline-flex animate-spin items-center justify-center",
-      className,
-    )}
-    {...props}
-  >
-    <LoaderIcon size={size} />
-  </div>
-);
+export const Loader = ({ className, size = 16, ...props }: LoaderProps) => {
+  const sizeValue = size === "sm" ? 14 : size;
+
+  return (
+    <div
+      className={cn(
+        "inline-flex animate-spin items-center justify-center",
+        className,
+      )}
+      {...props}
+    >
+      <LoaderIcon size={sizeValue} />
+    </div>
+  );
+};

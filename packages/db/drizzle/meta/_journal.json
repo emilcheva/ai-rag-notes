@@ -15,6 +15,13 @@
       "when": 1751976348026,
       "tag": "0001_shocking_starbolt",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1761473002809,
+      "tag": "0002_young_genesis",
+      "breakpoints": true
     }
   ]
 }

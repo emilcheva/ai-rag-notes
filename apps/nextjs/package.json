@@ -14,7 +14,8 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
-    "@ai-sdk/google": "^2.0.8",
+    "@ai-sdk/google": "catalog:",
+    "@ai-sdk/openai": "catalog:",
     "@ai-sdk/react": "^2.0.22",
     "@ragnotes/api": "workspace:*",
     "@ragnotes/auth": "workspace:*",
