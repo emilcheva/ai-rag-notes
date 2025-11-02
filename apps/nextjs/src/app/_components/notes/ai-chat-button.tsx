@@ -166,8 +166,10 @@ function ChatMessage({ message }: ChatMessageProps) {
   return (
     <div
       className={cn(
-        "mb-2 flex max-w-[80%] flex-col",
-        message.role === "user" ? "ml-auto items-end" : "mr-auto items-start",
+        "mb-2 flex flex-col",
+        message.role === "user"
+          ? "ml-auto max-w-[80%] items-end"
+          : "mr-auto items-start",
       )}
     >
       <div

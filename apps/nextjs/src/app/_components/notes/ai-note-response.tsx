@@ -35,16 +35,16 @@ export function NoteResponseCard({ note }: NoteCardProps) {
       key={note.id}
       className="rounded-md border border-border/50 bg-card p-3 shadow-sm"
     >
-      <div className="mb-2 flex items-center justify-between">
+      <div className="mb-2 flex items-center justify-between gap-3">
         <Link
           target="_blank"
           href={`/${note.id}`}
-          className="inline-flex items-center gap-1 rounded bg-primary/10 px-2 py-1 text-sm font-medium text-primary hover:bg-primary/20"
+          className="inline-flex max-w-[180px] items-center gap-2 rounded bg-primary/10 px-2 py-1 text-sm font-medium text-primary hover:bg-primary/20"
         >
-          <FileText size={14} />
-          {note.title || "Untitled Note"}
+          <FileText className="size-4 flex-shrink-0" />
+          <span className="truncate">{note.title || "Untitled Note"}</span>
         </Link>
-        <span className="text-xs text-muted-foreground">
+        <span className="flex-shrink-0 text-xs text-muted-foreground">
           Relevance: {Math.round(note.similarity * 100)}%
         </span>
       </div>
