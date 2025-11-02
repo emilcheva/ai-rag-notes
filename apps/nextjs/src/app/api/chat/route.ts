@@ -74,36 +74,31 @@ export async function POST(req: Request): Promise<Response> {
         }),
         //@ts-expect-error ai-sdk types are not compatible with zod
         execute: async ({ query }: { query: string }) => {
+          const session = await auth.api.getSession({
+            headers: await headers(),
+          });
+
+          if (!session?.user) {
+            return { notes: [], message: "Authentication required" };
+          }
+
           try {
-            const session = await auth.api.getSession({
-              headers: await headers(),
-            });
-
-            if (!session?.user) {
-              console.error("Authentication required - no valid session");
-              return { notes: [], message: "Authentication required" };
-            }
-
             const relevantNotes = await api.embeddings.findRelevantContent({
               query,
             });
 
-            if (!relevantNotes) {
-              console.error("No relevant notes found");
-              return {
-                notes: [],
-                message:
-                  "Can you be more specific or try with another question?",
-              };
-            }
-
             return {
-              notes: relevantNotes,
-              message: `Found ${relevantNotes.length} relevant notes`,
+              notes: relevantNotes || [],
+              message: relevantNotes?.length
+                ? `Found ${relevantNotes.length} relevant notes`
+                : "No relevant notes found. Try a different question.",
             };
           } catch (error) {
             console.error("Error searching for relevant notes:", error);
-            return { notes: [], message: "Error searching for notes" };
+            return {
+              notes: [],
+              message: "Error searching for notes.",
+            };
           }
         },
       }),

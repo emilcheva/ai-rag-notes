@@ -1,40 +1,16 @@
 "use client";
 
 import type { UIMessage } from "ai";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
-import { Bot, Expand, Minimize, Trash, X } from "lucide-react";
+import { Bot, Expand, Minimize, Send, Trash, X } from "lucide-react";
 
 import { cn } from "@ragnotes/ui";
-import {
-  Conversation,
-  ConversationContent,
-  ConversationScrollButton,
-} from "@ragnotes/ui/ai-elements/conversation";
-import { Loader } from "@ragnotes/ui/ai-elements/loader";
-import { Message, MessageContent } from "@ragnotes/ui/ai-elements/message";
-import {
-  PromptInput,
-  PromptInputSubmit,
-  PromptInputTextarea,
-  PromptInputToolbar,
-} from "@ragnotes/ui/ai-elements/prompt-input";
-import {
-  Reasoning,
-  ReasoningContent,
-  ReasoningTrigger,
-} from "@ragnotes/ui/ai-elements/reasoning";
-import { Response } from "@ragnotes/ui/ai-elements/response";
-import {
-  Source,
-  Sources,
-  SourcesContent,
-  SourcesTrigger,
-} from "@ragnotes/ui/ai-elements/source";
 import { Button } from "@ragnotes/ui/button";
+import { Textarea } from "@ragnotes/ui/textarea";
 
 import type { NoteData } from "./ai-note-response";
-import { NoteResponseLink, NotesResponseList } from "./ai-note-response";
+import { NotesResponseList } from "./ai-note-response";
 
 export function AIChatButton() {
   const [chatOpen, setChatOpen] = useState(false);
@@ -62,7 +38,7 @@ const initialMessages: UIMessage[] = [
     parts: [
       {
         type: "text",
-        text: "I'm your notes assistant. I can find any information that you saved. Ask me questions about your notes!",
+        text: "I'm your notes assistant. I can find and summarize any information that you saved.",
       },
     ],
   },
@@ -70,15 +46,23 @@ const initialMessages: UIMessage[] = [
 
 function AIChatBox({ open, onClose }: AIChatBoxProps) {
   const [input, setInput] = useState("");
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const { messages, sendMessage, setMessages, status } = useChat({
     messages: initialMessages,
   });
 
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
   const isProcessing = status === "submitted" || status === "streaming";
 
-  const [isExpanded, setIsExpanded] = useState(false);
+  useEffect(() => {
+    if (open) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [open, messages]);
 
-  function handleSubmit(e: React.FormEvent) {
+  function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (input.trim() && !isProcessing) {
       void sendMessage({ text: input });
@@ -86,7 +70,15 @@ function AIChatBox({ open, onClose }: AIChatBoxProps) {
     }
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      onSubmit(e);
+    }
+  };
+
   if (!open) return null;
+
+  const lastMessageIsUser = messages[messages.length - 1]?.role === "user";
 
   return (
     <div
@@ -113,9 +105,9 @@ function AIChatBox({ open, onClose }: AIChatBoxProps) {
             {isExpanded ? <Minimize /> : <Expand />}
           </Button>
           <Button
-            onClick={() => setMessages(initialMessages)}
             variant="ghost"
             size="icon"
+            onClick={() => setMessages(initialMessages)}
             className="h-8 w-8 text-primary-foreground hover:bg-primary/90"
             title="Clear chat"
             disabled={isProcessing}
@@ -134,172 +126,110 @@ function AIChatBox({ open, onClose }: AIChatBoxProps) {
       </div>
 
       <div className="flex-1 space-y-4 overflow-y-auto p-3">
-        <Conversation className="h-full">
-          <ConversationContent>
-            {messages.map((message) => (
-              <div key={message.id}>
-                {message.role === "assistant" && (
-                  <Sources>
-                    {message.parts.map((part, i) => {
-                      switch (part.type) {
-                        case "source-url":
-                          return (
-                            <>
-                              <SourcesTrigger
-                                count={
-                                  message.parts.filter(
-                                    (part) => part.type === "source-url",
-                                  ).length
-                                }
-                              />
-                              <SourcesContent key={`${message.id}-${i}`}>
-                                <Source
-                                  key={`${message.id}-${i}`}
-                                  href={part.url}
-                                  title={part.url}
-                                />
-                              </SourcesContent>
-                            </>
-                          );
-                      }
-                    })}
-                  </Sources>
-                )}
-                <Message from={message.role} key={message.id}>
-                  <MessageContent>
-                    {message.parts.map((part) => {
-                      switch (part.type) {
-                        case "text":
-                          return (
-                            <Response
-                              key={`${message.id}`}
-                              className={
-                                message.id === "welcome-message"
-                                  ? "rounded-lg border border-primary/30 bg-primary/10 p-4 font-medium"
-                                  : ""
-                              }
-                            >
-                              {part.text}
-                            </Response>
-                          );
-                        case "reasoning":
-                          return (
-                            <Reasoning
-                              key={`${message.id}`}
-                              className="w-full rounded-lg border border-primary/30 bg-primary/10 p-4 font-medium"
-                              isStreaming={status === "streaming"}
-                            >
-                              <ReasoningTrigger />
-                              <ReasoningContent>{part.text}</ReasoningContent>
-                            </Reasoning>
-                          );
-                        case "tool-getInformation":
-                          return (
-                            <div
-                              key={`${message.id}`}
-                              className="my-2 flex flex-col gap-3"
-                            >
-                              <div className="min-w-40 rounded-md border border-muted bg-muted/50 p-3 text-sm">
-                                <div className="mb-1 text-xs font-medium text-muted-foreground">
-                                  Answer
-                                </div>
-                                {part.state === "output-available" &&
-                                  formatResponseWithNoteLinks(part.output)}
-                              </div>
-                            </div>
-                          );
-                        default:
-                          return null;
-                      }
-                    })}
-                  </MessageContent>
-                </Message>
-              </div>
-            ))}
-            {status === "submitted" && <Loader />}
-          </ConversationContent>
-          <ConversationScrollButton />
-        </Conversation>
+        {messages.map((message) => (
+          <ChatMessage key={message.id} message={message} />
+        ))}
+        {isProcessing && lastMessageIsUser && <Loader />}
+        {status === "error" && <ErrorMessage />}
+        <div ref={messagesEndRef} />
       </div>
 
-      <PromptInput onSubmit={handleSubmit} className="mt-4 flex gap-2 p-4">
-        <PromptInputTextarea
-          className="border-0"
-          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-            setInput(e.target.value)
-          }
+      <form className="flex gap-2 border-t p-3" onSubmit={onSubmit}>
+        <Textarea
           value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="Type your message..."
+          className="max-h-[120px] min-h-[40px] resize-none overflow-y-auto"
+          maxLength={1000}
+          autoFocus
         />
-        <PromptInputToolbar>
-          <PromptInputSubmit
-            variant="secondary"
-            disabled={!input}
-            status={status}
-          />
-        </PromptInputToolbar>
-      </PromptInput>
+        <Button
+          type="submit"
+          size="icon"
+          disabled={!input.trim() || isProcessing}
+        >
+          <Send className="size-4" />
+        </Button>
+      </form>
     </div>
   );
 }
 
-// Helper function to process text with note links
-function processTextWithNoteLinks(content: string): React.ReactNode {
-  const noteIdRegex = /\[Note ID: ([a-zA-Z0-9-]+)\]/g;
-
-  if (!noteIdRegex.test(content)) {
-    return content;
-  }
-
-  // Reset regex state
-  noteIdRegex.lastIndex = 0;
-
-  const parts: React.ReactNode[] = [];
-  let lastIndex = 0;
-  let match: RegExpExecArray | null;
-
-  while ((match = noteIdRegex.exec(content)) !== null) {
-    // Add text before the match
-    if (match.index > lastIndex) {
-      parts.push(content.substring(lastIndex, match.index));
-    }
-
-    // Add the note link
-    const noteId = match[1];
-    if (noteId) {
-      parts.push(<NoteResponseLink key={`link-${noteId}`} noteId={noteId} />);
-    }
-
-    lastIndex = match.index + match[0].length;
-  }
-
-  // Add remaining text
-  if (lastIndex < content.length) {
-    parts.push(content.substring(lastIndex));
-  }
-
-  return <>{parts}</>;
+interface ChatMessageProps {
+  message: UIMessage;
 }
 
-// Helper function to format response text with note links
+function ChatMessage({ message }: ChatMessageProps) {
+  const currentStep = message.parts[message.parts.length - 1];
+
+  return (
+    <div
+      className={cn(
+        "mb-2 flex max-w-[80%] flex-col",
+        message.role === "user" ? "ml-auto items-end" : "mr-auto items-start",
+      )}
+    >
+      <div
+        className={cn(
+          "rounded-lg px-3 py-2 text-sm",
+          message.role === "user"
+            ? "bg-primary/40 text-primary-foreground"
+            : "bg-muted/50",
+        )}
+      >
+        {message.role === "assistant" && (
+          <div className="mb-1 flex items-center gap-1 text-xs font-medium text-muted-foreground">
+            <Bot className="size-5 text-primary" />
+            AI Assistant
+          </div>
+        )}
+        {currentStep?.type === "text" && <div>{currentStep.text}</div>}
+        {currentStep?.type === "tool-getInformation" &&
+          (currentStep.state === "output-available" ? (
+            formatResponseWithNoteLinks(currentStep.output)
+          ) : (
+            <div className="animate-pulse italic">Searching notes...</div>
+          ))}
+      </div>
+    </div>
+  );
+}
+
+function Loader() {
+  return (
+    <div className="ml-2 flex items-center gap-1 py-2">
+      <div className="size-1.5 animate-pulse rounded-full bg-primary" />
+      <div className="size-1.5 animate-pulse rounded-full bg-primary delay-150" />
+      <div className="size-1.5 animate-pulse rounded-full bg-primary delay-300" />
+    </div>
+  );
+}
+
+function ErrorMessage() {
+  return (
+    <div className="text-sm text-red-500">
+      Something went wrong. Please try again.
+    </div>
+  );
+}
+
 function formatResponseWithNoteLinks(content: unknown): React.ReactNode {
-  // If content is not a string (likely an object from tool output)
   if (typeof content !== "string") {
     try {
-      // Try to parse the tool output
       const output = content as {
         notes?: NoteData[];
         message?: string;
       };
 
-      if (!output.notes) {
+      if (!output.notes || output.notes.length === 0) {
         return (
           <p className="text-muted-foreground">
-            No notes information available
+            {output.message ?? "No relevant notes found"}
           </p>
         );
       }
 
-      // Format the notes as links
       return (
         <NotesResponseList notes={output.notes} message={output.message} />
       );
@@ -309,6 +239,5 @@ function formatResponseWithNoteLinks(content: unknown): React.ReactNode {
     }
   }
 
-  // For text responses, process note links
-  return processTextWithNoteLinks(content);
+  return content;
 }
