@@ -102,7 +102,7 @@ function AIChatBox({ open, onClose }: AIChatBoxProps) {
             className="h-8 w-8 text-primary-foreground hover:bg-primary/90"
             title={isExpanded ? "Minimize" : "Expand"}
           >
-            {isExpanded ? <Minimize /> : <Expand />}
+            {isExpanded ? <Minimize size={17} /> : <Expand size={17} />}
           </Button>
           <Button
             variant="ghost"
@@ -112,7 +112,7 @@ function AIChatBox({ open, onClose }: AIChatBoxProps) {
             title="Clear chat"
             disabled={isProcessing}
           >
-            <Trash />
+            <Trash size={17} />
           </Button>
           <Button
             variant="ghost"
@@ -120,7 +120,7 @@ function AIChatBox({ open, onClose }: AIChatBoxProps) {
             onClick={onClose}
             className="h-8 w-8 text-primary-foreground hover:bg-primary/90"
           >
-            <X className="size-4" />
+            <X size={17} />
           </Button>
         </div>
       </div>

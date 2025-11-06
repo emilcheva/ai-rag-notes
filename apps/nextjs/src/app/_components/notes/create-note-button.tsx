@@ -75,6 +75,8 @@ function CreateNoteDialog({ open, onOpenChange }: CreateNoteDialogProps) {
 
   const createNote = useMutation(trpc.note.create.mutationOptions());
 
+  const isSubmitting = form.formState.isSubmitting || createNote.isPending;
+
   function onSubmit(values: z.infer<typeof noteFormSchema>) {
     createNote.mutate(
       {
@@ -169,7 +171,9 @@ function CreateNoteDialog({ open, onOpenChange }: CreateNoteDialogProps) {
               )}
             />
             <DialogFooter>
-              <Button type="submit">Save</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Saving..." : "Save"}
+              </Button>
             </DialogFooter>
           </form>
         </Form>
