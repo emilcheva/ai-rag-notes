@@ -40,7 +40,9 @@ setup("setup e2e auth", async () => {
           ON CONFLICT (token) DO UPDATE SET "expires_at" = ${expiresAt}`,
     ]);
 
-    console.log("Create test user transaction completed successfully");
+    console.log(
+      "====== Create test user transaction completed successfully ======",
+    );
   } catch (error) {
     console.error("Error in transaction:", error);
     throw error;
