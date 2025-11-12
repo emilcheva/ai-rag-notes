@@ -1,0 +1,35 @@
+name: Apply DB migrations to production DB
+
+on:
+  push:
+    branches: ["main"]
+
+env:
+  BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+  POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
+  GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
+  SSR_SECRET_KEY: ${{ secrets.SSR_SECRET_KEY }}
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./tooling/github/setup
+
+      - name: Migrate
+        run: pnpm db:migrate
+
+  e2e:
+    needs: [migrate]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./tooling/github/setup
+
+      - name: Test
+        uses: ./tooling/github/test

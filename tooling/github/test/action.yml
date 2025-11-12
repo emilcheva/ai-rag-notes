@@ -1,0 +1,29 @@
+name: "Tests"
+description: "Common setup steps for playwright e2e tests"
+
+runs:
+  using: composite
+  steps:
+    - name: Copy env
+      shell: bash
+      run: cp .env.example .env
+
+    - name: Install Playwright with dependencies
+      run: pnpm playwright install --with-deps chromium --only-shell
+      shell: bash
+
+    - name: Build nextjs app
+      run: pnpm build:nextjs
+      shell: bash
+
+    - name: Run Playwright tests
+      run: pnpm test:e2e
+      shell: bash
+
+    - name: Upload Playwright report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: playwright-report
+        path: apps/nextjs/playwright-report/
+        retention-days: 30 # Github would delete this after 90 days

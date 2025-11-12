@@ -8,6 +8,7 @@
   "packageManager": "pnpm@10.12.4",
   "scripts": {
     "build": "turbo run build",
+    "build:nextjs": "turbo run build --filter=@ragnotes/nextjs",
     "clean": "git clean -xdf node_modules",
     "clean:workspaces": "turbo run clean",
     "auth:generate": "pnpm -F @ragnotes/auth generate",
@@ -23,7 +24,10 @@
     "lint:ws": "pnpm dlx sherif@latest",
     "postinstall": "pnpm lint:ws",
     "typecheck": "turbo run typecheck",
-    "ui-add": "turbo run ui-add"
+    "ui-add": "turbo run ui-add",
+    "test:e2e": "turbo run test:e2e",
+    "test:e2e:inspector": "turbo run test:e2e:inspector",
+    "test:e2e:ui": "turbo run test:e2e:ui"
   },
   "devDependencies": {
     "@ragnotes/prettier-config": "workspace:*",
