@@ -23,8 +23,8 @@ jobs:
         id: branch_name
         uses: tj-actions/branch-names@v8
 
-  create_neon_branch:
-    name: Create Neon Branch
+  create_neon_branch_and_run_tests:
+    name: Create Neon Branch and Run Tests
     outputs:
       db_url: ${{ steps.create_neon_branch_encode.outputs.db_url }}
       db_url_with_pooler: ${{ steps.create_neon_branch_encode.outputs.db_url_with_pooler }}
@@ -52,6 +52,14 @@ jobs:
         run: pnpm db:migrate
         env:
           POSTGRES_URL: ${{ steps.create_neon_branch.outputs.db_url_with_pooler }}
+
+      - name: Test e2e
+        uses: ./tooling/github/test
+        env:
+          POSTGRES_URL: ${{ steps.create_neon_branch.outputs.db_url_with_pooler }}
+          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+          GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
+          SSR_SECRET_KEY: ${{ secrets.SSR_SECRET_KEY }}
 
       - name: Set Vercel Preview Env Var
         run: echo "${{ steps.create_neon_branch.outputs.db_url_with_pooler }}" | pnpx vercel env add POSTGRES_URL preview --token ${{ secrets.VERCEL_TOKEN }} --force
