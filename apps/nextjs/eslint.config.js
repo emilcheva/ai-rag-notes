@@ -6,6 +6,9 @@ import reactConfig from "@ragnotes/eslint-config/react";
 export default [
   {
     ignores: [".next/**", "src/app/api/chat/route.ts"],
+    rules: {
+      "playwright/expect-expect": ["error", { assertFunctionNames: ["a11y"] }],
+    },
   },
   ...baseConfig,
   ...reactConfig,

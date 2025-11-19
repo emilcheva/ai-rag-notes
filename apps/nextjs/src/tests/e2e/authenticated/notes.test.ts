@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test.describe("Notes page (authenticated)", () => {
+test.describe("notes page (authenticated)", () => {
   test("should display the notes page", async ({ page }) => {
     await page.goto("/");
 

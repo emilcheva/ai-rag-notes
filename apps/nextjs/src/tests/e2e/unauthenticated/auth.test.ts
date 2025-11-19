@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test.describe("Authentication flow", () => {
+test.describe("authentication flow", () => {
   test("should redirect to sign-in page when accessing protected route", async ({
     page,
   }) => {
