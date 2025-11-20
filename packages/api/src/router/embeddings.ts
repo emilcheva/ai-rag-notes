@@ -24,7 +24,6 @@ export const embeddingsRouter = {
 
         // Calculate cosine similarity between query and note embeddings
         const similarity = sql<number>`1 - (${cosineDistance(
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           Note.embedding,
           userQueryEmbedded,
         )})`;
@@ -41,7 +40,7 @@ export const embeddingsRouter = {
           .where(
             and(
               eq(Note.ownerId, userId),
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
               isNotNull(Note.embedding),
               gt(similarity, 0.5),
             ),
