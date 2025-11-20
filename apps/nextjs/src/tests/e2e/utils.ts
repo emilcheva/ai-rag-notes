@@ -1,19 +1,19 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { Browser } from "@playwright/test";
+import type { Browser } from "@playwright/test";
 
-export type CreateBrowserContextOptions = {
+export interface CreateBrowserContextOptions {
   baseURL?: string;
   colorScheme?: "light" | "dark" | "no-preference";
-  localStorage?: Array<{ name: string; value: string }>;
+  localStorage?: { name: string; value: string }[];
   authenticated?: boolean;
-};
+}
 
 export const createBrowserContext = async (
   browser: Browser,
-  options: CreateBrowserContextOptions = {}
+  options: CreateBrowserContextOptions = {},
 ) => {
-  let storageState: any = {
+  const storageState = {
     cookies: [],
     origins: [
       {
@@ -26,8 +26,9 @@ export const createBrowserContext = async (
   if (options.authenticated) {
     const authDir = path.join(process.cwd(), "src", "tests", "e2e", ".auth");
     const authFile = path.join(authDir, "auth.json");
-    const storageStateAuth = JSON.parse(await fs.readFile(authFile, "utf-8"));
-    storageState.cookies = storageStateAuth.cookies;
+    storageState.cookies = JSON.parse(
+      await fs.readFile(authFile, "utf-8"),
+    ).cookies;
   }
 
   return browser.newContext({

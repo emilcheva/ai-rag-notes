@@ -1,4 +1,4 @@
-import { Browser, test } from "@playwright/test";
+import { test } from "@playwright/test";
 
 import { a11y } from "../a11y";
 import { createBrowserContext } from "../utils";
