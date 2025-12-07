@@ -12,7 +12,17 @@ export function NoteContentPreview({ content }: { content: string }) {
         ? (JSON.parse(content) as JSONContent)
         : content;
 
-    const html = generateHTML(parsedContent, defaultExtensions);
+    let html = generateHTML(parsedContent, defaultExtensions);
+
+    html = html
+      .replace(
+        '<input type="checkbox">',
+        '<input type="checkbox" disabled class="pointer-events-none">',
+      )
+      .replace(
+        '<input type="checkbox" checked>',
+        '<input type="checkbox" checked disabled class="pointer-events-none">',
+      );
 
     return (
       <div
