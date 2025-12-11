@@ -1,0 +1,18 @@
+import ReactMarkdown from "react-markdown";
+
+import { cn } from "@ragnotes/ui";
+
+interface MarkdownProps {
+  children: string;
+  className?: string;
+}
+
+export default function Markdown({ children, className }: MarkdownProps) {
+  return (
+    <div
+      className={cn("prose prose-sm dark:prose-invert max-w-none", className)}
+    >
+      <ReactMarkdown>{children}</ReactMarkdown>
+    </div>
+  );
+}

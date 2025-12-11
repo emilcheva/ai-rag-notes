@@ -10,6 +10,7 @@ import { Button } from "@ragnotes/ui/button";
 import { Textarea } from "@ragnotes/ui/textarea";
 
 import type { NoteData } from "./ai-note-response";
+import Markdown from "../markdown/markdown";
 import { NotesResponseList } from "./ai-note-response";
 
 export function AIChatButton() {
@@ -186,7 +187,9 @@ function ChatMessage({ message }: ChatMessageProps) {
             AI Assistant
           </div>
         )}
-        {currentStep?.type === "text" && <div>{currentStep.text}</div>}
+        {currentStep?.type === "text" && currentStep.text.trim() && (
+          <Markdown>{currentStep.text}</Markdown>
+        )}
         {currentStep?.type === "tool-getInformation" &&
           (currentStep.state === "output-available" ? (
             formatResponseWithNoteLinks(currentStep.output)
