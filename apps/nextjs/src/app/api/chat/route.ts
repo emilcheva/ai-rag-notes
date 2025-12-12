@@ -93,18 +93,19 @@ export async function POST(req: Request): Promise<Response> {
                 ? `Found ${relevantNotes.length} relevant notes`
                 : "No relevant notes found. Try a different question.",
             };
-          } catch (error) {
+          } catch (error: unknown) {
             console.error("Error searching for relevant notes:", error);
+            const errorMessage =
+              error instanceof Error
+                ? error.message
+                : "An unknown error occurred";
             return {
               notes: [],
-              message: "Error searching for notes.",
+              message: errorMessage,
             };
           }
         },
       }),
-    },
-    onError(error) {
-      console.error("AI streamText error:", error);
     },
   });
 
