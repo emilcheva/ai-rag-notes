@@ -93,11 +93,9 @@ const MarkdownExtension = Markdown.configure({
 
 const youtubeExtension = Youtube.configure({
   HTMLAttributes: {
-    class: cn("mx-auto my-4"),
+    class: cn("mx-auto my-4 w-full"),
   },
   inline: true,
-  width: 400,
-  height: 300,
 });
 
 const taskList = TaskList.configure({

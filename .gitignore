@@ -45,6 +45,7 @@ yarn-error.log*
 # typescript
 dist/
 .cache
+next-env.d.ts
 
 # turbo
 .turbo

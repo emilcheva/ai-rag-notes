@@ -37,7 +37,7 @@ const Page = async ({ searchParams }: Props) => {
 
   return (
     <HydrateClient>
-      <div className="lg:max-w-8xl container mx-auto">
+      <div className="mx-auto md:container lg:max-w-7xl">
         <div className="mb-8 flex items-center justify-between">
           <h1 className="text-2xl font-bold">My Notes</h1>
           <div className="flex gap-2">

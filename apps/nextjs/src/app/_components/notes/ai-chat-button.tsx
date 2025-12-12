@@ -3,13 +3,22 @@
 import type { UIMessage } from "ai";
 import { useEffect, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
-import { Bot, Expand, Minimize, Send, Trash, X } from "lucide-react";
+import {
+  AlertCircle,
+  Bot,
+  Expand,
+  Minimize,
+  Send,
+  Trash,
+  X,
+} from "lucide-react";
 
 import { cn } from "@ragnotes/ui";
 import { Button } from "@ragnotes/ui/button";
 import { Textarea } from "@ragnotes/ui/textarea";
 
 import type { NoteData } from "./ai-note-response";
+import Markdown from "../markdown/markdown";
 import { NotesResponseList } from "./ai-note-response";
 
 export function AIChatButton() {
@@ -48,7 +57,7 @@ function AIChatBox({ open, onClose }: AIChatBoxProps) {
   const [input, setInput] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const { messages, sendMessage, setMessages, status } = useChat({
+  const { messages, sendMessage, setMessages, status, error } = useChat({
     messages: initialMessages,
   });
 
@@ -130,7 +139,7 @@ function AIChatBox({ open, onClose }: AIChatBoxProps) {
           <ChatMessage key={message.id} message={message} />
         ))}
         {isProcessing && lastMessageIsUser && <Loader />}
-        {status === "error" && <ErrorMessage />}
+        {status === "error" && <ErrorMessage error={error} />}
         <div ref={messagesEndRef} />
       </div>
 
@@ -186,7 +195,9 @@ function ChatMessage({ message }: ChatMessageProps) {
             AI Assistant
           </div>
         )}
-        {currentStep?.type === "text" && <div>{currentStep.text}</div>}
+        {currentStep?.type === "text" && currentStep.text.trim() && (
+          <Markdown>{currentStep.text}</Markdown>
+        )}
         {currentStep?.type === "tool-getInformation" &&
           (currentStep.state === "output-available" ? (
             formatResponseWithNoteLinks(currentStep.output)
@@ -208,10 +219,29 @@ function Loader() {
   );
 }
 
-function ErrorMessage() {
+interface ErrorMessageProps {
+  error?: Error | null;
+}
+
+function ErrorMessage({ error }: ErrorMessageProps) {
+  if (!error) return null;
+
   return (
-    <div className="text-sm text-red-500">
-      Something went wrong. Please try again.
+    <div className="flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800 dark:border-red-800 dark:bg-red-950 dark:text-red-200">
+      <AlertCircle className="mt-0.5 size-4 flex-shrink-0 text-red-500" />
+      <div className="space-y-1">
+        <p className="font-medium">Something went wrong</p>
+        <p className="text-xs">{error.message}</p>
+        {/* Show the stack trace in development mode */}
+        {/* {process.env.NODE_ENV === "development" && error.stack && (
+          <details className="mt-2">
+            <summary className="cursor-pointer text-xs font-medium">
+              Technical details
+            </summary>
+            <pre className="mt-1 overflow-auto text-xs">{error.stack}</pre>
+          </details>
+        )} */}
+      </div>
     </div>
   );
 }
