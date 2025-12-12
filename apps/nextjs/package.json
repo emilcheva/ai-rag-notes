@@ -43,6 +43,7 @@
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
     "react-error-boundary": "^6.0.0",
+    "react-markdown": "^10.0.1",
     "ssr-only-secrets": "^0.1.2",
     "superjson": "2.2.2",
     "tiptap-markdown": "^0.8.10",
