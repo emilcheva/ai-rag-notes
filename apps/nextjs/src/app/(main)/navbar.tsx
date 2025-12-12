@@ -9,10 +9,10 @@ import { SignOutButton } from "../_components/auth/sign-out-button";
 export function Navbar() {
   return (
     <nav className="mb-4 flex justify-center border-b bg-card p-4">
-      <div className="container mx-auto flex items-center justify-between xl:max-w-6xl">
+      <div className="mx-auto flex w-full items-center justify-between md:container lg:max-w-7xl">
         <Link
           href="/"
-          className="flex items-center gap-3 text-xl font-semibold text-card-foreground transition-opacity hover:opacity-80"
+          className="flex items-center gap-3 font-semibold text-card-foreground transition-opacity hover:opacity-80 md:text-xl"
         >
           <Image
             src={logo}

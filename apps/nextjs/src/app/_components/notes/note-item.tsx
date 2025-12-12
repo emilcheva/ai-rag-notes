@@ -53,7 +53,7 @@ export function NoteItem({ noteId }: { noteId: string }) {
   };
 
   return (
-    <div className="container mx-auto max-w-4xl py-8">
+    <div className="mx-auto py-8 md:container lg:max-w-7xl">
       <div className="mb-6 flex items-center justify-between">
         <Button
           variant="outline"
