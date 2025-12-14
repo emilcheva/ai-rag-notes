@@ -1,17 +1,19 @@
-# ragnotes
+# RAGNotes AI
 
-## About
+  <p><strong>A note-taking app with an AI chatbot that can answer questions based on the user's notes using RAG (Retrieval Augmented Generation).</strong></p>
+
+---
 
 Built on top of [Turborepo](https://turborepo.org) and contains:
 
 ```text
 .github
   └─ workflows
-        └─ CI with pnpm cache setup
+        └─ CI with Neon DB branching for PR previews
 .vscode
   └─ Recommended extensions and settings for VSCode users
 apps
-  └─ next.js
+  └─ nextjs
       ├─ Next.js 15
       ├─ React 19
       ├─ Tailwind CSS
@@ -24,7 +26,7 @@ packages
   ├─ db
   |   └─ Typesafe db calls using Drizzle & Supabase
   └─ ui
-      └─ Start of a UI package for the webapp using shadcn-ui
+      └─ UI package for the webapp using shadcn-ui
 tooling
   ├─ eslint
   |   └─ shared, fine-grained, eslint presets
@@ -33,87 +35,76 @@ tooling
   ├─ tailwind
   |   └─ shared tailwind configuration
   └─ typescript
-      └─ shared tsconfig you can extend from
+      └─ shared tsconfig
 ```
 
-## Quick Start
+## ✨ Features
+
+- **AI-Powered Notes**: Utilizes the Vercel AI SDK for Retrieval-Augmented Generation.
+- **End-to-End Typesafety**: Full-stack type safety with tRPC.
+- **Modern Frontend**: Built with Next.js 15 App Router and React 19.
+- **Scalable Architecture**: Monorepo managed with Turborepo for optimized builds and caching.
+- **Optimized CI/CD**: Automated CI pipeline using GitHub Actions with pnpm caching for faster builds.
+- **Preview Databases**: Automatically provisions a new Neon database instance for each pull request, ensuring isolated testing environments.
+- **Secure Authentication**: Handled by `better-auth` for robust and secure user sessions.
+- **Performant Database**: Typesafe SQL with Drizzle ORM connected to a Neon serverless Postgres database.
+- **Rich Text Editing**: A Notion-style editor experience provided by Novel.
+- **End-to-End Testing**: Comprehensive e2e tests using Playwright, including automated accessibility scanning with Axe.
+
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js](https://nextjs.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **UI Components**: [shadcn/ui](https://ui.shadcn.com/) based on Radix UI for accessible UI components
+- **API**: [tRPC](https://trpc.io/)
+- **Authentication**: [better-auth](https://github.com/BetterAuth/better-auth)
+- **Database**: [Neon](https://neon.tech/) Serverless Postgres
+- **ORM**: [Drizzle ORM](https://orm.drizzle.team/)
+- **AI**: [Vercel AI SDK](https://sdk.vercel.ai/)
+- **Monorepo**: [Turborepo](https://turborepo.org/)
+
+## 🚀 Quick Start
 
 > **Note**
 > The [db](./packages/db) package is preconfigured to use Neon and is **edge-bound**.
 
 To get it running, follow the steps below:
 
-### 1. Setup dependencies
+1.  **Clone the repository:**
 
-```bash
-# Install dependencies
-pnpm i
+    ```bash
+    git clone https://github.com/emilcheva/ai-rag-notes.git
+    cd ai-rag-notes
+    ```
 
-# Configure environment variables
-# There is an `.env.example` in the root directory you can use for reference
-cp .env.example .env
+2.  **Install dependencies:**
 
-# Push the Drizzle schema to the database
-pnpm db:push
-```
+    ```bash
+    pnpm install
+    ```
 
-#### Deploy the Auth Proxy (RECOMMENDED)
+3.  **Set up environment variables:**
+    Create a `.env` file in the root of the project by copying the example:
 
-Better-auth comes with an [auth proxy plugin](https://www.better-auth.com/docs/plugins/oauth-proxy). By deploying the Next.js app, you can get OAuth working in preview deployments and development for Expo apps.
+    ```bash
+    cp .env.example .env
+    ```
 
-By using the proxy plugin, the Next.js apps will forward any auth requests to the proxy server, which will handle the OAuth flow and then redirect back to the Next.js app. This makes it easy to get OAuth working since you'll have a stable URL that is publicly accessible and doesn't change for every deployment and doesn't rely on what port the app is running on. So if port 3000 is taken and your Next.js app starts at port 3001 instead, your auth should still work without having to reconfigure the OAuth provider.
+    Populate the `.env` file with your credentials for Neon, Google AI, etc.
 
-#### Add your local IP to your OAuth provider
+4.  **Push database schema:**
 
-You can alternatively add your local IP (e.g. `192.168.x.y:$PORT`) to your OAuth provider. This may not be as reliable as your local IP may change when you change networks. Some OAuth providers may also only support a single callback URL for each app making this approach unviable for some providers (e.g. GitHub).
+    ```bash
+    pnpm db:push
+    ```
 
-### When it's time to add a new UI component
+5.  **Run the development server:**
+    ```bash
+    pnpm dev
+    ```
 
-Run the `ui-add` script to add a new UI component using the interactive `shadcn/ui` CLI:
+The application will be available at `http://localhost:3000`.
 
-```bash
-pnpm ui-add
-```
-
-When the component(s) has been installed, you should be good to go and start using it in your app.
-
-### When it's time to add a new package
-
-To add a new package, simply run `pnpm turbo gen init` in the monorepo root. This will prompt you for a package name as well as if you want to install any dependencies to the new package (of course you can also do this yourself later).
-
-The generator sets up the `package.json`, `tsconfig.json` and a `index.ts`, as well as configures all the necessary configurations for tooling around your package such as formatting, linting and typechecking. When the package is created, you're ready to go build out the package.
-
-## FAQ
-
-### Does this pattern leak backend code to my client applications?
-
-No, it does not. The `api` package should only be a production dependency in the Next.js application where it's served. All other apps should only add the `api` package as a dev dependency. This lets you have full typesafety in your client applications, while keeping your backend code safe.
-
-If you need to share runtime code between the client and server, such as input validation schemas, you can create a separate `shared` package for this and import it on both sides.
-
-## Deployment
-
-### Next.js
-
-#### Prerequisites
-
-> **Note**
-> Please note that the Next.js application with tRPC must be deployed in order for the Expo app to communicate with the server in a production environment.
-
-#### Deploy to Vercel
-
-Let's deploy the Next.js application to [Vercel](https://vercel.com). If you've never deployed a Turborepo app there, don't worry, the steps are quite straightforward. You can also read the [official Turborepo guide](https://vercel.com/docs/concepts/monorepos/turborepo) on deploying to Vercel.
-
-1. Create a new project on Vercel, select the `apps/nextjs` folder as the root directory. Vercel's zero-config system should handle all configurations for you.
-
-2. Add your `POSTGRES_URL` environment variable.
-
-3. Done! Your app should successfully deploy. Assign your domain and use that instead of `localhost` for the `url` in the Expo app so that your Expo app can communicate with your backend when you are not in development.
-
-### Auth Proxy
-
-The auth proxy comes as a better-auth plugin. This is required for the Next.js app to be able to authenticate users in preview deployments. The auth proxy is not used for OAuth request in production deployments. The easiest way to get it running is to deploy the Next.js app to vercel.
-
-## References
+##
 
 The stack originates from [create-t3-app](https://github.com/t3-oss/create-t3-app). Kudos to the author!
