@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { headers } from "next/headers";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { cloakSSROnlySecret } from "ssr-only-secrets";
 
@@ -64,14 +65,17 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
           geistMono.variable,
         )}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <NuqsAdapter>
-            <TRPCReactProvider ssrOnlySecret={encryptedCookie}>
-              {props.children}
-            </TRPCReactProvider>
-          </NuqsAdapter>
-          <Toaster richColors />
-        </ThemeProvider>
+        <>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <NuqsAdapter>
+              <TRPCReactProvider ssrOnlySecret={encryptedCookie}>
+                {props.children}
+              </TRPCReactProvider>
+            </NuqsAdapter>
+            <Toaster richColors />
+          </ThemeProvider>
+          <SpeedInsights />
+        </>
       </body>
     </html>
   );
