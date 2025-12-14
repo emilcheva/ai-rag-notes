@@ -1,5 +1,3 @@
-# RAGNotes AI
-
   <p><strong>A note-taking app with an AI chatbot that can answer questions based on the user's notes using RAG (Retrieval Augmented Generation).</strong></p>
 
 ---
