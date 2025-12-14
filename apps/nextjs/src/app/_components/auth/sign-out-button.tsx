@@ -1,6 +1,6 @@
 "use client";
 
-import router from "next/router";
+import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
 
 import { Button } from "@ragnotes/ui/button";
@@ -8,6 +8,7 @@ import { Button } from "@ragnotes/ui/button";
 import { authClient } from "~/auth/client";
 
 export function SignOutButton() {
+  const router = useRouter();
   return (
     <form>
       <Button
