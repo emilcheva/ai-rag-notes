@@ -2,6 +2,8 @@
 
 ---
 
+![Notes Application Preview](snapshot.png)
+
 Built on top of [Turborepo](https://turborepo.org) and contains:
 
 ```text
@@ -22,7 +24,7 @@ packages
   ├─ auth
   |   └─ Authentication using better-auth.
   ├─ db
-  |   └─ Typesafe db calls using Drizzle & Supabase
+  |   └─ Typesafe db calls using Drizzle
   └─ ui
       └─ UI package for the webapp using shadcn-ui
 tooling
@@ -105,4 +107,4 @@ The application will be available at `http://localhost:3000`.
 
 ##
 
-The stack originates from [create-t3-app](https://github.com/t3-oss/create-t3-app). Kudos to the author!
+The stack originates from [create-t3-turbo](https://github.com/t3-oss/create-t3-turbo). Kudos to the author!
