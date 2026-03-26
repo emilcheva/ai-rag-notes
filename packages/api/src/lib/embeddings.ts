@@ -16,12 +16,13 @@ const googleAI = createGoogleGenerativeAI({
   },
 });
 
-const embeddingModel = googleAI.textEmbeddingModel("text-embedding-004");
+const embeddingModel = googleAI.textEmbeddingModel("gemini-embedding-001");
 
 export async function generateEmbedding(value: string): Promise<number[]> {
   const { embedding } = await embed({
     model: embeddingModel,
     value,
+    providerOptions: { google: { outputDimensionality: 768 } },
   });
 
   return embedding;
@@ -40,6 +41,7 @@ export async function generateEmbeddings(value: string) {
   const { embeddings } = await embedMany({
     model: embeddingModel,
     values: chunks,
+    providerOptions: { google: { outputDimensionality: 768 } },
   });
 
   return embeddings.map((embedding, index) => ({
